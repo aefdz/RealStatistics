@@ -1,2 +1,2 @@
-# Innovacion-Docente
+# InnovacionDocente
 This is a repository for working on the cases studies.
