@@ -1,0 +1,29 @@
+name: "RBA"
+output_dir: "."
+navbar:
+  title: "RBA 2017"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "The Project"
+      href: plenary.html
+    - text: "Case Studies"
+      menu:
+        - text: "Data and Code"
+          href: shortcourse_data.html
+        - text: "Review"
+          href: shortcourse_review.html
+        - text: "Scalar-on-Function"
+          href: shortcourse_sofr.html
+        - text: "Function-on-Scalar"
+          href: shortcourse_fosr.html
+        - text: "Other Topics"
+          href: shortcourse_other.html
+  right:
+    - text: "About"
+      href: about.html
+    - icon: fa-github fa-lg
+      href: http://github.com/jeff-goldsmith/IWAFDA
+output:
+  html_document:
+    theme: flatly
