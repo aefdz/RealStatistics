@@ -23,7 +23,7 @@ navbar:
     - text: "About"
       href: about.html
     - icon: fa-github fa-lg
-      href: http://github.com/jeff-goldsmith/IWAFDA
+      href: https://github.com/
 output:
   html_document:
     theme: flatly
