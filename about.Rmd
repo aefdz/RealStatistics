@@ -1,5 +1,6 @@
 ---
 title: "About This Website"
+css: mystyle.css
 ---
 
 This is an [R Markdown website](http://rmarkdown.rstudio.com/rmarkdown_websites.html), created by Javier, Juan Carlos y Antonio. It was forked from [Jeff Golsmith Github](https://github.com/jeff-goldsmith/IWAFDA).
