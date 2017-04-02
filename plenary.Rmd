@@ -1,5 +1,6 @@
 ---
 title: "About the project"
+css: mystyle.css
 ---
 
 El principal objetivo de este proyecto es mostrar a los alumnos de la Facultad de Ciencias Sociales y Jurídicas la utilidad de la estadística para resolver situaciones de particular interés en el mundo institucional y empresarial.

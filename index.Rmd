@@ -1,5 +1,6 @@
 ---
 title: "Real Business Analytics"
+css: mystyle.css
 ---
 
 The workshop belongs to an innovation project by the [Department of Statistics](http://portal.uc3m.es/portal/page/portal/dpto_estadistica) of [Carlos III University of Madrid](http://www.uc3m.es/Home). This first edition is for students enrolled in the second and third year of the Degree in Statistics and Business Administration.

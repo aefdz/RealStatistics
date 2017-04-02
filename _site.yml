@@ -9,7 +9,7 @@ navbar:
       href: plenary.html
     - text: "Case Studies"
       menu:
-        - text: "Data and Code"
+        - text: "Case 1"
           href: shortcourse_data.html
         - text: "Review"
           href: shortcourse_review.html
