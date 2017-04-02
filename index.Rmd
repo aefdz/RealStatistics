@@ -7,3 +7,5 @@ The workshop belongs to an innovation project by the [Department of Statistics](
 This project was presented by Rosa Elvira Lillo (coordinator), Javier De Vicente Maldonado (javvicen@est-econ.uc3m.es) and Antonio Elías (aelias@est-econ.uc3m.es), both  Phd students in Statistics. 
 
 The materials for the case studies that are going to be discussed will be published in this website.
+
+![](https://github.com/aefdz/InnovacionDocente/blob/master/wordcloud.png)
