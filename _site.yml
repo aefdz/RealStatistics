@@ -1,24 +1,24 @@
 name: "RBA"
 output_dir: "."
 navbar:
-  title: "RBA 2017"
+  title: "Real Statistics Analytics"
   left:
-    - text: "Home"
-      href: index.html
     - text: "The Project"
       href: plenary.html
     - text: "Case Studies"
       menu:
-        - text: "Case 1"
+        - text: "R and Rmarkdown"
           href: shortcourse_data.html
-        - text: "Review"
+        - text: "Recommender Systems"
           href: shortcourse_review.html
-        - text: "Scalar-on-Function"
+        - text: "Indicators"
           href: shortcourse_sofr.html
-        - text: "Function-on-Scalar"
+        - text: "Stress Test"
           href: shortcourse_fosr.html
-        - text: "Other Topics"
+        - text: "Clustering"
           href: shortcourse_other.html
+        - text: "Multiple System Estimation"
+          href: shortcourse_other2.html
   right:
     - text: "About"
       href: about.html
