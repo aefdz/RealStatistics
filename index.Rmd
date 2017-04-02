@@ -8,4 +8,4 @@ This project was presented by Rosa Elvira Lillo (coordinator), Javier De Vicente
 
 The materials for the case studies that are going to be discussed will be published in this website.
 
-![](https://github.com/aefdz/InnovacionDocente/blob/master/wordcloud.png)
+![](wordcloud.png)
