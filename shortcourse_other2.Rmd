@@ -19,6 +19,8 @@ library(tidyverse)
 library(refund.shiny)
 ```
 
+## Brief Explanation 
+
 ## Practical example
 
 Due to a lack of publicly available and easy-to-implement code for scalar-on-image regression, we focus on methods for the functional linear concurrent model. 

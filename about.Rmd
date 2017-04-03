@@ -3,6 +3,6 @@ title: "About This Website"
 css: mystyle.css
 ---
 
-This is an [R Markdown website](http://rmarkdown.rstudio.com/rmarkdown_websites.html), created by Javier, Juan Carlos y Antonio. It was forked from [Jeff Golsmith Github](https://github.com/jeff-goldsmith/IWAFDA).
+This is an [R Markdown website](http://rmarkdown.rstudio.com/rmarkdown_websites.html), created by Javier De Vicente y Antonio Elías. It was forked from [Jeff Golsmith Github](https://github.com/jeff-goldsmith/IWAFDA).
 
 In the course 'Real Business Analytics', we'll use [R](https://www.r-project.org/) and an integrated development environment for it [R Studio](https://www.rstudio.com/).
