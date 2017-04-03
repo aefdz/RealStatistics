@@ -11,7 +11,7 @@
 
 
 
-<title>Review of Variable Selection</title>
+<title>Recommender Systems</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -71,6 +71,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="mystyle.css" type="text/css" />
 
 </head>
 
@@ -279,37 +280,37 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">IWAFDA 2017</a>
+      <a class="navbar-brand" href="index.html">Real Statistics Analytics</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
-</li>
-<li>
-  <a href="plenary.html">Plenary Talk</a>
+  <a href="plenary.html">The Project</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Short Course
+    Case Studies
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="shortcourse_data.html">Data and Code</a>
+      <a href="shortcourse_data.html">R and Rmarkdown</a>
     </li>
     <li>
-      <a href="shortcourse_review.html">Review</a>
+      <a href="shortcourse_review.html">Recommender Systems</a>
     </li>
     <li>
-      <a href="shortcourse_sofr.html">Scalar-on-Function</a>
+      <a href="shortcourse_sofr.html">Indicators</a>
     </li>
     <li>
-      <a href="shortcourse_fosr.html">Function-on-Scalar</a>
+      <a href="shortcourse_fosr.html">Stress Test</a>
     </li>
     <li>
-      <a href="shortcourse_other.html">Other Topics</a>
+      <a href="shortcourse_other.html">Clustering</a>
+    </li>
+    <li>
+      <a href="shortcourse_other2.html">Multiple System Estimation</a>
     </li>
   </ul>
 </li>
@@ -319,7 +320,7 @@ div.tocify {
   <a href="about.html">About</a>
 </li>
 <li>
-  <a href="http://github.com/jeff-goldsmith/IWAFDA">
+  <a href="https://github.com/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -341,24 +342,47 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Review of Variable Selection</h1>
+<h1 class="title toc-ignore">Recommender Systems</h1>
 
 </div>
 
 
-<p>This page contains a combination of traditional lecture materials (slides) and code demonstrating the relevant methods. The short course will proceed by working through both. We will use several recent packages in our examples; see the <a href="./About.html">About</a> page for information about the package versions.</p>
+<p>Almost every people has receipt a recommendation from them even if he/she has never heard about it. Selling websites like Amazon or simple browsers as Google’s are training models from data in order to provide the best product or website to their customers given some information such as sociodemographic characteristics, historical purchased products or likes in websites. Obviously, recommender systems are on the spot of many companies and institutions who are trying to provide the most adequate item for a given person. The concept and its typologies are motivated by illustrative examples obtained from recommender systems that are currently working. The final goal is to build a recommender systems from the scratch for a real problem.</p>
+<p>This page contains a combination of traditional lecture materials (slides) and code demonstrating the relevant methods. The course will proceed by working through both. We will use several recent packages in our examples; see the <a href="./About.html">About</a> page for information about the package versions.</p>
 <pre class="r"><code>library(tidyverse)
+## Warning: package &#39;tidyverse&#39; was built under R version 3.3.3
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Warning: package &#39;tibble&#39; was built under R version 3.3.3
+## Warning: package &#39;tidyr&#39; was built under R version 3.3.3
+## Warning: package &#39;readr&#39; was built under R version 3.3.3
+## Warning: package &#39;purrr&#39; was built under R version 3.3.3
+## Warning: package &#39;dplyr&#39; was built under R version 3.3.3
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
 library(grpreg)
+## Warning: package &#39;grpreg&#39; was built under R version 3.3.2
+## Loading required package: Matrix
+## 
+## Attaching package: &#39;Matrix&#39;
+## The following object is masked from &#39;package:tidyr&#39;:
+## 
+##     expand
+## 
+## Attaching package: &#39;grpreg&#39;
+## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     select
 library(splines)
 library(refund)
-library(refund.shiny)</code></pre>
-<div id="methods-for-variable-selection" class="section level2">
-<h2>Methods for variable selection</h2>
-<script async class="speakerdeck-embed" data-id="a3d65d19df9d45f69010597ab6c957c6" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/vs-in-fda-short-course-i" title="VS in FDA Short Course I" target="_blank">VS in FDA Short Course I</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
-</div>
-</div>
+## Warning: package &#39;refund&#39; was built under R version 3.3.2
+library(refund.shiny)
+## Warning: package &#39;refund.shiny&#39; was built under R version 3.3.3</code></pre>
 <div id="practical-example" class="section level2">
 <h2>Practical example</h2>
 <p>In this section we will briefly examine implementations of variable selection methods, with emphasis on group variable selection methods using penalized approaches. The primary package and function is <code>grpreg::grpreg</code>; we’ll start with the example included in the help file for this function.</p>

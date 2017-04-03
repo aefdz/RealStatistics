@@ -5,6 +5,7 @@ output:
     code_folding: hide
     toc: true
     toc_float: true
+    css: mystyle.css
 ---
 
 ```{r, echo = FALSE}
@@ -13,20 +14,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-This page contains a combination of traditional lecture materials (slides) and code demonstrating the relevant methods. The short course will proceed by working through both. We will use several recent packages in our examples; see the [About](./About.html) page for information about the package versions.
+One of the main goals referred to in the economic development literature is the need to fight and eradicate poverty. However, in order for economic policies to be efficient, it is highly important to properly understand and establish the target of such policies (the poorest). In this paper, we propose a new methodology based on a multivariate approach to determine the profile of the poorest in Tanzania. Through the application of Monge-Kantarovich’s depth measure and Voronoi’s iteration, we see that variables such as the quality of health or the access to supplies play crucial roles in the correct
+measurement of poverty in Tanzania.
 
 ```{r setup}
 library(tidyverse)
-library(vbvs.concurrent)
 library(refund.shiny)
 ```
-
-
-## Other topics
-
-<script async class="speakerdeck-embed" data-id="2db7348be17b4d47a9b0aca62b482559" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px"> <strong> <a href="https://speakerdeck.com/jeffgoldsmith/vs-in-fda-short-course-iv" title="VS in FDA Short Course IV" target="_blank">VS in FDA Short Course IV</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>. </div>
-
 
 ## Practical example
 
@@ -85,39 +79,6 @@ panels = lapply(c("Cov_1", "Cov_2", "Y"), plot_function, data = concurrent_data)
 grid.arrange(panels[[1]], panels[[2]], panels[[3]], nrow = 1)
 
 ```
-
-To fit the functional linear concurrent model with variable selection, we can use `vbvs_concurrent`. 
-
-```{r vbvs_fit}
-fit_vbvs = vbvs_concurrent(Y ~ Cov_1 + Cov_2 + Cov_3 + Cov_4 + Cov_5 + 
-													 Cov_6 + Cov_7 + Cov_8 + Cov_9 + Cov_10 + 
-													 Cov_11 + Cov_12 + Cov_13 + Cov_14 + Cov_15 + 
-													 Cov_16 + Cov_17 + Cov_18 + Cov_19 + Cov_20 | time, 
-													 id.var = "subj", data = concurrent_data, 
-                           t.min = 0, t.max = 1, standardized = TRUE)
-```
-
-The plot below shows true coefficients and estimates without using variable selection.
-
-```{r coefficients, echo=FALSE, fig.height=6, fig.width=9, echo=FALSE}
-coefs = coef(fit_vbvs, t.new = seq(0, 1, length = 101)) %>%
-  mutate(True_1 = beta1(time),
-         True_2 = beta2(time)) %>%
-  gather(key, value, Cov_1:True_2) %>%
-  extract(key, c("Estimate", "Beta"), "([[:alnum:]]+)_([[:alnum:]]+)") %>%
-	mutate(Beta = factor(Beta, levels = 1:20))
-
-ggplot(coefs, aes(x = time, y = value, color = Estimate)) + geom_path() + 
-  facet_wrap(~Beta) + theme_bw() + theme(legend.position = "bottom")
-```
-
-Interactive graphics show observed data, coefficient functions, and residual curves. The code below will produce such a graphic. As noted in the slides, this approach also uses FPCA to decompose residual curves as part of the overall model fitting; this decomposition can be viewed using the tool we saw previously.
-
-```{r interactive_plot, eval=FALSE}
-plot_shiny(fit_vbvs)
-plot_shiny(fit_vbvs$fpca.obj)
-```
-
 
 ## Try it yourself!
 

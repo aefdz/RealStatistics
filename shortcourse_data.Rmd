@@ -5,6 +5,7 @@ output:
     code_folding: hide
     toc: true
     toc_float: true
+    css: mystyle.css
 ---
 
 Several datasets and some supporting code will be used in the short course. They are below.

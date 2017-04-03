@@ -11,7 +11,7 @@
 
 
 
-<title>Other Topics</title>
+<title>Clustering</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -71,6 +71,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="mystyle.css" type="text/css" />
 
 </head>
 
@@ -279,37 +280,37 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">IWAFDA 2017</a>
+      <a class="navbar-brand" href="index.html">Real Statistics Analytics</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">Home</a>
-</li>
-<li>
-  <a href="plenary.html">Plenary Talk</a>
+  <a href="plenary.html">The Project</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Short Course
+    Case Studies
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="shortcourse_data.html">Data and Code</a>
+      <a href="shortcourse_data.html">R and Rmarkdown</a>
     </li>
     <li>
-      <a href="shortcourse_review.html">Review</a>
+      <a href="shortcourse_review.html">Recommender Systems</a>
     </li>
     <li>
-      <a href="shortcourse_sofr.html">Scalar-on-Function</a>
+      <a href="shortcourse_sofr.html">Indicators</a>
     </li>
     <li>
-      <a href="shortcourse_fosr.html">Function-on-Scalar</a>
+      <a href="shortcourse_fosr.html">Stress Test</a>
     </li>
     <li>
-      <a href="shortcourse_other.html">Other Topics</a>
+      <a href="shortcourse_other.html">Clustering</a>
+    </li>
+    <li>
+      <a href="shortcourse_other2.html">Multiple System Estimation</a>
     </li>
   </ul>
 </li>
@@ -319,7 +320,7 @@ div.tocify {
   <a href="about.html">About</a>
 </li>
 <li>
-  <a href="http://github.com/jeff-goldsmith/IWAFDA">
+  <a href="https://github.com/">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -341,22 +342,30 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Other Topics</h1>
+<h1 class="title toc-ignore">Clustering</h1>
 
 </div>
 
 
-<p>This page contains a combination of traditional lecture materials (slides) and code demonstrating the relevant methods. The short course will proceed by working through both. We will use several recent packages in our examples; see the <a href="./About.html">About</a> page for information about the package versions.</p>
+<p>One of the main goals referred to in the economic development literature is the need to fight and eradicate poverty. However, in order for economic policies to be efficient, it is highly important to properly understand and establish the target of such policies (the poorest). In this paper, we propose a new methodology based on a multivariate approach to determine the profile of the poorest in Tanzania. Through the application of Monge-Kantarovich’s depth measure and Voronoi’s iteration, we see that variables such as the quality of health or the access to supplies play crucial roles in the correct measurement of poverty in Tanzania.</p>
 <pre class="r"><code>library(tidyverse)
-library(vbvs.concurrent)
-library(refund.shiny)</code></pre>
-<div id="other-topics" class="section level2">
-<h2>Other topics</h2>
-<script async class="speakerdeck-embed" data-id="2db7348be17b4d47a9b0aca62b482559" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script>
-<div style="margin-bottom:5px">
-<strong> <a href="https://speakerdeck.com/jeffgoldsmith/vs-in-fda-short-course-iv" title="VS in FDA Short Course IV" target="_blank">VS in FDA Short Course IV</a> </strong> from <strong><a href="https://speakerdeck.com/jeffgoldsmith" target="_blank">Jeff Goldsmith</a></strong>.
-</div>
-</div>
+## Warning: package &#39;tidyverse&#39; was built under R version 3.3.3
+## Loading tidyverse: ggplot2
+## Loading tidyverse: tibble
+## Loading tidyverse: tidyr
+## Loading tidyverse: readr
+## Loading tidyverse: purrr
+## Loading tidyverse: dplyr
+## Warning: package &#39;tibble&#39; was built under R version 3.3.3
+## Warning: package &#39;tidyr&#39; was built under R version 3.3.3
+## Warning: package &#39;readr&#39; was built under R version 3.3.3
+## Warning: package &#39;purrr&#39; was built under R version 3.3.3
+## Warning: package &#39;dplyr&#39; was built under R version 3.3.3
+## Conflicts with tidy packages ----------------------------------------------
+## filter(): dplyr, stats
+## lag():    dplyr, stats
+library(refund.shiny)
+## Warning: package &#39;refund.shiny&#39; was built under R version 3.3.3</code></pre>
 <div id="practical-example" class="section level2">
 <h2>Practical example</h2>
 <p>Due to a lack of publicly available and easy-to-implement code for scalar-on-image regression, we focus on methods for the functional linear concurrent model.</p>
@@ -393,27 +402,13 @@ colnames(superfulous_covariates) = paste0(&quot;Cov_&quot;, 3:20)
 
 concurrent_data = bind_cols(concurrent_data, as.data.frame(superfulous_covariates))</code></pre>
 <p>The plot below shows the first two predictors and the response, highlighting four subjects.</p>
-<pre><code>## 
+<pre><code>## Warning: package &#39;gridExtra&#39; was built under R version 3.3.3
+## 
 ## Attaching package: &#39;gridExtra&#39;
 ## The following object is masked from &#39;package:dplyr&#39;:
 ## 
 ##     combine</code></pre>
 <p><img src="shortcourse_other_files/figure-html/plot_data-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p>To fit the functional linear concurrent model with variable selection, we can use <code>vbvs_concurrent</code>.</p>
-<pre class="r"><code>fit_vbvs = vbvs_concurrent(Y ~ Cov_1 + Cov_2 + Cov_3 + Cov_4 + Cov_5 + 
-                                                     Cov_6 + Cov_7 + Cov_8 + Cov_9 + Cov_10 + 
-                                                     Cov_11 + Cov_12 + Cov_13 + Cov_14 + Cov_15 + 
-                                                     Cov_16 + Cov_17 + Cov_18 + Cov_19 + Cov_20 | time, 
-                                                     id.var = &quot;subj&quot;, data = concurrent_data, 
-                           t.min = 0, t.max = 1, standardized = TRUE)
-## Constructing Xstar; doing data organization 
-## Beginning Algorithm 
-## ..........</code></pre>
-<p>The plot below shows true coefficients and estimates without using variable selection.</p>
-<p><img src="shortcourse_other_files/figure-html/coefficients-1.png" width="864" /></p>
-<p>Interactive graphics show observed data, coefficient functions, and residual curves. The code below will produce such a graphic. As noted in the slides, this approach also uses FPCA to decompose residual curves as part of the overall model fitting; this decomposition can be viewed using the tool we saw previously.</p>
-<pre class="r"><code>plot_shiny(fit_vbvs)
-plot_shiny(fit_vbvs$fpca.obj)</code></pre>
 </div>
 <div id="try-it-yourself" class="section level2">
 <h2>Try it yourself!</h2>
