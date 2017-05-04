@@ -8,7 +8,7 @@ navbar:
     - text: "Case Studies"
       menu:
         - text: "R and Rmarkdown"
-          href: sessionRBA_1.html
+          href: courseRBA_1.html
         - text: "Recommender Systems"
           href: shortcourse_review.html
         - text: "Indicators"
