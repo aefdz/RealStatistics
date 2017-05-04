@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Rmarkdown and Anscombe’s Quartet</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="mystyle.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Real Business Analytics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="plenary.html">The Project</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Case Studies
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="sessionRBA_1.html">R and Rmarkdown</a>
+    </li>
+    <li>
+      <a href="shortcourse_review.html">Recommender Systems</a>
+    </li>
+    <li>
+      <a href="shortcourse_sofr.html">Indicators</a>
+    </li>
+    <li>
+      <a href="shortcourse_fosr.html">Stress Test</a>
+    </li>
+    <li>
+      <a href="shortcourse_other.html">Clustering</a>
+    </li>
+    <li>
+      <a href="shortcourse_other2.html">Multiple System Estimation</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="https://github.com/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Rmarkdown and Anscombe’s Quartet</h1>
+
+</div>
+
+
+<pre class="r"><code># We can call to the needed libraries or load the data sets we are going to use.
+# echo, message, warning =FALSE because we do not want messages, warnings and Rcode in the final output
+library(knitr) #for nice tables
+library(stats); library(graphics) #needed for the data set and some statistics</code></pre>
+<p>In the first session we learnt how to produce formatted output automatically from a .Rmd file that combines text and some R code. For doing so, we introduced <a href="http://rmarkdown.rstudio.com/r_notebooks.html">R notebook</a> and <a href="http://rmarkdown.rstudio.com/">Rmarkdown</a>. R notebook is an R Markdown document with chunks that can be executed independently and interactively, with output visible immediately beneath the input. Finally, we understood the workflow (<a href="https://cran.r-project.org/web/packages/knitr/index.html">Knitr</a>+<a href="http://pandoc.org/">PANDOC</a>) that produces the final output.</p>
+<p>This is an example of Rmarkdown document that you could use as starting point or as a template for future projects, we tried to use mostly all the commands we explained during the session. You can download the file <a href="">here</a> and the <a href="https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf">Cheat Sheet</a>.</p>
+<p>All the content contained is based on <a href="https://en.wikipedia.org/wiki/Anscombe%27s_quartet">Wikipedia</a> and the code was taken from the R help of the data set “anscombe”.</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p><strong>Anscombe’s quartet</strong> comprises four datasets that have nearly identical simple descriptive statistics, yet appear very different when graphed. Each dataset consists of eleven points in <span class="math inline">\(\mathbb{R}^2\)</span>. They were constructed in 1973 by the statistician Francis J. Anscombe to demonstrate both the importance of graphing data before analyzing it and the effect of outliers on statistical properties. He described the article as being intended to attack the impression among statisticians that “numerical calculations are exact, but graphs are rough”. For more details you can find his article <em>Graphs in statistical analysis</em> (1973) published in the journal American Statistician.</p>
+<div id="the-data-set" class="section level2">
+<h2>The data set</h2>
+<p>Here we load the data set and print the variables using the kable function from knitr package. One could observe how the values of all the variables look roughly equal. However, the small disparities make a big difference.</p>
+<pre class="r"><code>data(&quot;anscombe&quot;)
+kable(anscombe, caption = &quot;Here we have our data set&quot;)</code></pre>
+<table>
+<caption>Here we have our data set</caption>
+<thead>
+<tr class="header">
+<th align="right">x1</th>
+<th align="right">x2</th>
+<th align="right">x3</th>
+<th align="right">x4</th>
+<th align="right">y1</th>
+<th align="right">y2</th>
+<th align="right">y3</th>
+<th align="right">y4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">10</td>
+<td align="right">10</td>
+<td align="right">10</td>
+<td align="right">8</td>
+<td align="right">8.04</td>
+<td align="right">9.14</td>
+<td align="right">7.46</td>
+<td align="right">6.58</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="right">8</td>
+<td align="right">8</td>
+<td align="right">8</td>
+<td align="right">6.95</td>
+<td align="right">8.14</td>
+<td align="right">6.77</td>
+<td align="right">5.76</td>
+</tr>
+<tr class="odd">
+<td align="right">13</td>
+<td align="right">13</td>
+<td align="right">13</td>
+<td align="right">8</td>
+<td align="right">7.58</td>
+<td align="right">8.74</td>
+<td align="right">12.74</td>
+<td align="right">7.71</td>
+</tr>
+<tr class="even">
+<td align="right">9</td>
+<td align="right">9</td>
+<td align="right">9</td>
+<td align="right">8</td>
+<td align="right">8.81</td>
+<td align="right">8.77</td>
+<td align="right">7.11</td>
+<td align="right">8.84</td>
+</tr>
+<tr class="odd">
+<td align="right">11</td>
+<td align="right">11</td>
+<td align="right">11</td>
+<td align="right">8</td>
+<td align="right">8.33</td>
+<td align="right">9.26</td>
+<td align="right">7.81</td>
+<td align="right">8.47</td>
+</tr>
+<tr class="even">
+<td align="right">14</td>
+<td align="right">14</td>
+<td align="right">14</td>
+<td align="right">8</td>
+<td align="right">9.96</td>
+<td align="right">8.10</td>
+<td align="right">8.84</td>
+<td align="right">7.04</td>
+</tr>
+<tr class="odd">
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">8</td>
+<td align="right">7.24</td>
+<td align="right">6.13</td>
+<td align="right">6.08</td>
+<td align="right">5.25</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">4</td>
+<td align="right">4</td>
+<td align="right">19</td>
+<td align="right">4.26</td>
+<td align="right">3.10</td>
+<td align="right">5.39</td>
+<td align="right">12.50</td>
+</tr>
+<tr class="odd">
+<td align="right">12</td>
+<td align="right">12</td>
+<td align="right">12</td>
+<td align="right">8</td>
+<td align="right">10.84</td>
+<td align="right">9.13</td>
+<td align="right">8.15</td>
+<td align="right">5.56</td>
+</tr>
+<tr class="even">
+<td align="right">7</td>
+<td align="right">7</td>
+<td align="right">7</td>
+<td align="right">8</td>
+<td align="right">4.82</td>
+<td align="right">7.26</td>
+<td align="right">6.42</td>
+<td align="right">7.91</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">8</td>
+<td align="right">5.68</td>
+<td align="right">4.74</td>
+<td align="right">5.73</td>
+<td align="right">6.89</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="numerical-analysis" class="section level1">
+<h1>Numerical Analysis</h1>
+<div id="some-descriptive-statistics" class="section level2">
+<h2>Some descriptive statistics</h2>
+<p>Let compute some statistics. We are going to see how the results for each variable are more or less similar.</p>
+<pre class="r"><code>stat&lt;-summary(anscombe)
+
+kable(stat[,5:8], caption = &quot;Descriptive statistics&quot;)</code></pre>
+<table>
+<caption>Descriptive statistics</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="center">y1</th>
+<th align="center">y2</th>
+<th align="center">y3</th>
+<th align="center">y4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td align="center">Min. : 4.260</td>
+<td align="center">Min. :3.100</td>
+<td align="center">Min. : 5.39</td>
+<td align="center">Min. : 5.250</td>
+</tr>
+<tr class="even">
+<td></td>
+<td align="center">1st Qu.: 6.315</td>
+<td align="center">1st Qu.:6.695</td>
+<td align="center">1st Qu.: 6.25</td>
+<td align="center">1st Qu.: 6.170</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td align="center">Median : 7.580</td>
+<td align="center">Median :8.140</td>
+<td align="center">Median : 7.11</td>
+<td align="center">Median : 7.040</td>
+</tr>
+<tr class="even">
+<td></td>
+<td align="center">Mean : 7.501</td>
+<td align="center">Mean :7.501</td>
+<td align="center">Mean : 7.50</td>
+<td align="center">Mean : 7.501</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td align="center">3rd Qu.: 8.570</td>
+<td align="center">3rd Qu.:8.950</td>
+<td align="center">3rd Qu.: 7.98</td>
+<td align="center">3rd Qu.: 8.190</td>
+</tr>
+<tr class="even">
+<td></td>
+<td align="center">Max. :10.840</td>
+<td align="center">Max. :9.260</td>
+<td align="center">Max. :12.74</td>
+<td align="center">Max. :12.500</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>kable(round(t(sapply(anscombe, var)[5:8]),digits = 2), caption = &quot;Variances&quot;)</code></pre>
+<table>
+<caption>Variances</caption>
+<thead>
+<tr class="header">
+<th align="right">y1</th>
+<th align="right">y2</th>
+<th align="right">y3</th>
+<th align="right">y4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">4.13</td>
+<td align="right">4.13</td>
+<td align="right">4.12</td>
+<td align="right">4.12</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="linear-regression" class="section level2">
+<h2>Linear Regression</h2>
+<p>Here we go with some formulas, if you need help with some command just look for LATEX math mode in internet or check this <a href="https://en.wikibooks.org/wiki/LaTeX/Mathematics">web</a>.</p>
+<p>Given two variables <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span>, we assume that the variables follow a linear relationship such that <span class="math display">\[Y = \beta_0+\beta_1*X+\epsilon,\]</span> being <span class="math inline">\(\epsilon\)</span> a independent and identically distributed random variable from a normal distribution <span class="math inline">\(\epsilon \sim N(0,1)\)</span>. We can estimate the parameters by minimizing the mean square error, i.e. <span class="math display">\[\min_{ \{\beta_0,\beta_1\}} \sum_{i=1}^n (y_i-\beta_0-\beta_1*x_i)^2,\]</span> ending up with <span class="math display">\[\hat{\beta_1}=\frac{Cov(X,Y)}{V(X)},\]</span> <span class="math display">\[\hat{\beta_0}= \bar{Y}-\bar{X}*\beta_1.\]</span></p>
+<p>In the following code chunk, the linear regression model are adjusted to the 4 variables. The parameters, standar errors, t-values and p-values are roughly the same.</p>
+<pre class="r"><code>## now some &quot;magic&quot; to do the 4 regressions in a loop:
+ff &lt;- y ~ x
+mods &lt;- setNames(as.list(1:4), paste0(&quot;lm&quot;, 1:4))
+for(i in 1:4) {
+  ff[2:3] &lt;- lapply(paste0(c(&quot;y&quot;,&quot;x&quot;), i), as.name)
+  mods[[i]] &lt;- lmi &lt;- lm(ff, data = anscombe)
+}
+
+kable(lapply(mods[1:2], function(fm) coef(summary(fm))), caption=&#39;Regressions&#39;)</code></pre>
+<table class="kable_wrapper">
+<caption>
+Regressions
+</caption>
+<tbody>
+<tr>
+<td>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Intercept)</td>
+<td align="right">3.0000909</td>
+<td align="right">1.1247468</td>
+<td align="right">2.667348</td>
+<td align="right">0.0257341</td>
+</tr>
+<tr class="even">
+<td>x1</td>
+<td align="right">0.5000909</td>
+<td align="right">0.1179055</td>
+<td align="right">4.241455</td>
+<td align="right">0.0021696</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Intercept)</td>
+<td align="right">3.000909</td>
+<td align="right">1.1253024</td>
+<td align="right">2.666758</td>
+<td align="right">0.0257589</td>
+</tr>
+<tr class="even">
+<td>x2</td>
+<td align="right">0.500000</td>
+<td align="right">0.1179637</td>
+<td align="right">4.238590</td>
+<td align="right">0.0021788</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>kable(lapply(mods[3:4], function(fm) coef(summary(fm))), caption=&#39;Regressions&#39;)</code></pre>
+<table class="kable_wrapper">
+<caption>
+Regressions
+</caption>
+<tbody>
+<tr>
+<td>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Intercept)</td>
+<td align="right">3.0024545</td>
+<td align="right">1.1244812</td>
+<td align="right">2.670080</td>
+<td align="right">0.0256191</td>
+</tr>
+<tr class="even">
+<td>x3</td>
+<td align="right">0.4997273</td>
+<td align="right">0.1178777</td>
+<td align="right">4.239372</td>
+<td align="right">0.0021763</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Estimate</th>
+<th align="right">Std. Error</th>
+<th align="right">t value</th>
+<th align="right">Pr(&gt;|t|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>(Intercept)</td>
+<td align="right">3.0017273</td>
+<td align="right">1.1239211</td>
+<td align="right">2.670763</td>
+<td align="right">0.0255904</td>
+</tr>
+<tr class="even">
+<td>x4</td>
+<td align="right">0.4999091</td>
+<td align="right">0.1178189</td>
+<td align="right">4.243028</td>
+<td align="right">0.0021646</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="graphical-analysis" class="section level1">
+<h1>Graphical analysis</h1>
+<p>A simple plot can bring to light that the 4 variables are very different one from another.</p>
+<pre class="r"><code>op &lt;- par(mfrow = c(2, 2), mar = 0.1+c(4,4,1,1), oma =  c(0, 0, 2, 0))
+for(i in 1:4) {
+  ff[2:3] &lt;- lapply(paste0(c(&quot;y&quot;,&quot;x&quot;), i), as.name)
+  plot(ff, data = anscombe, col = &quot;red&quot;, pch = 21, bg = &quot;orange&quot;, cex = 1.2,
+       xlim = c(3, 19), ylim = c(3, 13))
+    abline(mods[[i]], col = &quot;blue&quot;)
+}
+mtext(&quot;Anscombe&#39;s data sets&quot;, outer = TRUE, cex = 1.5)</code></pre>
+<p><img src="courseRBA_1_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<ol style="list-style-type: decimal">
+<li>The first scatter plot (top left) appears to be a simple linear relationship, corresponding to two variables correlated and following the assumption of normality of the linear regression model.</li>
+<li>The second graph (top right) is not distributed normally; while a relationship between the two variables is obvious, it is not linear, and the Pearson correlation coefficient is not relevant because it was defined for measuring linear relationship.</li>
+<li>In the third graph (bottom left), the distribution is linear, but should have a different regression line (a robust regression would have been called for). The calculated regression is offset by the one outlier which exerts enough influence to lower the correlation coefficient from 1 to 0.816.</li>
+<li>Finally, the fourth graph (bottom right) shows an example when one outlier is enough to produce a high correlation coefficient, even though the other data points do not indicate any relationship between the variables.</li>
+</ol>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<blockquote>
+<p>“Numerical calculations are exact, but graphs are rough”.</p>
+</blockquote>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

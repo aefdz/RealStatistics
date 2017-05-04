@@ -1,14 +1,14 @@
 name: "RBA"
 output_dir: "."
 navbar:
-  title: "Real World Analytics"
+  title: "Real Business Analytics"
   left:
     - text: "The Project"
       href: plenary.html
     - text: "Case Studies"
       menu:
         - text: "R and Rmarkdown"
-          href: shortcourse_data.html
+          href: sessionRBA_1.html
         - text: "Recommender Systems"
           href: shortcourse_review.html
         - text: "Indicators"
