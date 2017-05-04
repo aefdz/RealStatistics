@@ -1,7 +1,7 @@
 name: "RBA"
 output_dir: "."
 navbar:
-  title: "Real Statistics Analytics"
+  title: "Real World Analytics"
   left:
     - text: "The Project"
       href: plenary.html
