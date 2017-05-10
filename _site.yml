@@ -10,7 +10,7 @@ navbar:
         - text: "R and Rmarkdown"
           href: courseRBA_1.html
         - text: "Recommender Systems"
-          href: shortcourse_review.html
+          href: courseRBA_2.html
         - text: "Indicators"
           href: shortcourse_sofr.html
         - text: "Stress Test"

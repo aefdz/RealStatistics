@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -298,7 +298,7 @@ div.tocify {
       <a href="courseRBA_1.html">R and Rmarkdown</a>
     </li>
     <li>
-      <a href="shortcourse_review.html">Recommender Systems</a>
+      <a href="courseRBA_2.html">Recommender Systems</a>
     </li>
     <li>
       <a href="shortcourse_sofr.html">Indicators</a>
@@ -350,73 +350,6 @@ div.tocify {
 <div id="brief-explanation" class="section level2">
 <h2>Brief Explanation</h2>
 <p>One of the main goals referred to in the economic development literature is the need to fight and eradicate poverty. However, in order for economic policies to be efficient, it is highly important to properly understand and establish the target of such policies (the poorest). In this paper, we propose a new methodology based on a multivariate approach to determine the profile of the poorest in Tanzania. Through the application of Monge-Kantarovich’s depth measure and Voronoi’s iteration, we see that variables such as the quality of health or the access to supplies play crucial roles in the correct measurement of poverty in Tanzania.</p>
-<pre class="r"><code>library(tidyverse)
-## Warning: package &#39;tidyverse&#39; was built under R version 3.3.3
-## Loading tidyverse: ggplot2
-## Loading tidyverse: tibble
-## Loading tidyverse: tidyr
-## Loading tidyverse: readr
-## Loading tidyverse: purrr
-## Loading tidyverse: dplyr
-## Warning: package &#39;tibble&#39; was built under R version 3.3.3
-## Warning: package &#39;tidyr&#39; was built under R version 3.3.3
-## Warning: package &#39;readr&#39; was built under R version 3.3.3
-## Warning: package &#39;purrr&#39; was built under R version 3.3.3
-## Warning: package &#39;dplyr&#39; was built under R version 3.3.3
-## Conflicts with tidy packages ----------------------------------------------
-## filter(): dplyr, stats
-## lag():    dplyr, stats
-library(refund.shiny)
-## Warning: package &#39;refund.shiny&#39; was built under R version 3.3.3</code></pre>
-</div>
-<div id="practical-example" class="section level2">
-<h2>Practical example</h2>
-<p>Due to a lack of publicly available and easy-to-implement code for scalar-on-image regression, we focus on methods for the functional linear concurrent model.</p>
-<p>The snippet below simulates a simple example which we will use for illustration.</p>
-<pre class="r"><code>## set design elements
-set.seed(1)
-I = 50
-
-## coefficient functions
-beta1 = function(t) { 1 }
-beta2 = function(t) { cos(2*t*pi) }
-psi1 = function(t) { sin(2*t*pi) }
-
-## generate subjects and observation times
-concurrent_data = 
-  data.frame(
-    subj = rep(1:I, each = 20)
-  ) %&gt;%
-  mutate(time = runif(dim(.)[1])) %&gt;%
-  arrange(subj, time) %&gt;%
-  group_by(subj) %&gt;%
-    mutate(Cov_1 = runif(1, .5, 1.5) * sin(2 * pi * time),
-           Cov_2 = runif(1, 0, 1) + runif(1, -.5, 2) * time,
-                 FPC_score = rnorm(1, 0, .5),
-           Y = Cov_1 * beta1(time) + 
-               Cov_2 * beta2(time) +
-                       FPC_score * psi1(time) + 
-               rnorm(20, 0, .5)) %&gt;%
-  ungroup() %&gt;%
-    dplyr::select(subj, time, Y, everything())
-
-superfulous_covariates = matrix(rnorm(18 * I * 20), nrow = I * 20, ncol = 18)
-colnames(superfulous_covariates) = paste0(&quot;Cov_&quot;, 3:20)
-
-concurrent_data = bind_cols(concurrent_data, as.data.frame(superfulous_covariates))</code></pre>
-<p>The plot below shows the first two predictors and the response, highlighting four subjects.</p>
-<pre><code>## Warning: package &#39;gridExtra&#39; was built under R version 3.3.3
-## 
-## Attaching package: &#39;gridExtra&#39;
-## The following object is masked from &#39;package:dplyr&#39;:
-## 
-##     combine</code></pre>
-<p><img src="shortcourse_other_files/figure-html/plot_data-1.png" width="864" style="display: block; margin: auto;" /></p>
-</div>
-<div id="try-it-yourself" class="section level2">
-<h2>Try it yourself!</h2>
-<p>As in all other examples, the preceding approach has tuning parameters. These can be set by hand using the <em>v0</em> argument to the <code>vbvs_concurrent</code> function. There is also a <code>cv_vbvs_concurrent</code> function, and versions without variable selection.</p>
-<p>As an alternative to the functional linear concurrent model, note that the functional linear model is a special case; by carefully constructing the data frame containing predictions, <code>vbvs_concurrent</code> can be used for variable selection in that setting, and is interesting to compare to other methods we’ve seen so far.</p>
 </div>
 
 
@@ -444,7 +377,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
