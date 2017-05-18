@@ -14,6 +14,9 @@ library(MASS)
 library(ggplot2)
 library(Amelia)
 library(leaps)
+library(MASS)
+library(DMwR)
+library(rgl)
 ```
 
 ## Brief Explanation 
@@ -39,6 +42,7 @@ Some Composite Indicators:
 [Forecast.png](courseRBA_3/Forecast.png)
 
 
+## Missing Value Imputation
 ```{r, warning=FALSE}
 options(warn = -1)
 #Import Data
@@ -52,17 +56,24 @@ x2<-Data_estimate[,2]
 x3<-Data_estimate[,3]
 x4<-Data_estimate[,4]
 
+
+#
 dif<-matrix(0,length(x3),1)
 dif2<-matrix(0,length(x3),1)
-
 Data_estimate<-data.frame(Data_estimate)
 leaps<-regsubsets(x3~x1+x2+x4,data=Data_estimate,nbest=2)
+plot(leaps,scale="r2")
 fit <- lm(x3~x1+x2+x4)
 for (i in 1:length(x3)) {
   value_estimate=fit$coefficients[1]+fit$coefficients[2]*x2[i]+fit$coefficients[3]*x3[i]+fit$coefficients[4]*x4[i]
   dif[i]<-abs(x3[i]-value_estimate)/x3[i]
   }
 check_value<-mean(dif[!is.na(dif)])
+check_value2<-median(dif[!is.na(dif)])
+check_value3<-sd(dif[!is.na(dif)])
+print(check_value)
+print(check_value2)
+print(check_value3)
 for (i in 1:length(x3)) {
   Data_estim<-Data
   Data_estim[i,3]<-NA
@@ -72,7 +83,12 @@ for (i in 1:length(x3)) {
   em_estimation<-as.matrix(a.out$imputations[[1]])
   dif2[i]<-abs(x3[i]-em_estimation[i,3])/x3[i]
 }
-check_value2<-mean(dif2[!is.na(dif2)])
+check_value<-mean(dif2[!is.na(dif2)])
+check_value2<-median(dif2[!is.na(dif2)])
+check_value3<-sd(dif2[!is.na(dif2)])
+print(check_value)
+print(check_value2)
+print(check_value3)
 Errors=cbind(dif,dif2)
 ddf<-data.frame(Errors,GRP = c("Regression","EM"))
 boxplot(Errors ~ GRP, main="Relative Welfare",data = ddf, lwd = 1, ylab = 'Errors')
@@ -81,16 +97,104 @@ stripchart(Errors~ GRP,vertical = TRUE, data = ddf,
 
 ```
 
+## Outlier Detection
+```{r, warning=FALSE}
+Data_estimate<-data.frame(Data)
+x1<-Data_estimate[,1]
+x2<-Data_estimate[,2]
+x3<-Data_estimate[,3]
+x4<-Data_estimate[,4]
+#Univariate
+outlier_values <- boxplot.stats(x3)$out  # outlier values.
+print(outlier_values)
+boxplot(x3, boxwex=0.7)
+mtext(paste("Outliers: None"), cex=1)
+#Multivariate
+#Cook DIstance
+mod <- lm(x3 ~ ., data=Data_estimate)
+cooksd <- cooks.distance(mod)
+plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+abline(h = 4*mean(cooksd, na.rm=T), col="red")  # add cutoff line
+text(x=1:length(cooksd)+1, y=cooksd, labels=ifelse(cooksd>4*mean(cooksd, na.rm=T),names(cooksd),""), col="red")
+#Mahalanobi Distance
+Data2<-Data_estimate[,c(1:3)]
+n.outliers   <- 2 # Mark as outliers the 2 most extreme points
+m.dist.order <- order(mahalanobis(Data2, colMeans(Data2), cov(Data2)), decreasing=TRUE)
+is.outlier   <- rep(FALSE, nrow(Data2))
+is.outlier[m.dist.order[1:n.outliers]] <- TRUE
+pch <- is.outlier * 16
+col<- is.outlier + 1
+plot3d(Data2[,1], Data2[,2], Data2[,3], type="s", col=col,xlab = "Pension",ylab="Poverty",zlab="Welfare")
 
-## Plots
 
-Step-wise Results
-
-```{r pressure, echo=FALSE}
-plot(leaps,scale="r2")
 ```
 
-Box-Plots
+## Normalization
+```{r, warning=FALSE}
+
+Data3<-Data
+  for (i in 1:4) {
+    Data3[,i]<-(Data3[,i]-min(Data3[,i]))/(max(Data3[,i])-min(Data3[,i]))
+  }
+
+
+Data4<-Data
+for (i in 1:4) {
+  Data4[,i]<-SoftMax( Data4[,i], lambda = 2, avg = mean( Data4[,i], na.rm = T), std = sd( Data4[,i], na.rm = T))
+}
+
+RR3<-cor(Data3)
+check_value<-mean(dif[!is.na(dif2)])
+
+RR<-cor(Data)
+Data2<-Data
+for (i in 1:4) {
+  Data2[,i]<-scale(Data2[,i],TRUE,TRUE)
+}
+
+RR2<-cor(Data2)
+dif<-RR-RR2
+check_value<-mean(dif[!is.na(dif)])
+
+RR4<-cor(Data4)
+dif<-RR-RR4
+check_value<-mean(dif[!is.na(dif)])
+
+
+values<-matrix(0,4,3)
+for (i in 1:4) {
+par(mfrow=c(2,2))
+hist(Data[,2], col=rgb(0.1,0,1,0.5),xlab="Original",main="Poverty Rate")
+hist(Data2[,2], col=rgb(0.1,0,1,0.5),xlab="Standardization",main="Poverty Rate")
+hist(Data3[,2], col=rgb(0.1,0,1,0.5),xlab="Max.Min",main="Poverty Rate")
+hist(Data3[,2], col=rgb(0.1,0,1,0.5),xlab="SoftMax",main="Poverty Rate")
+
+}
+values<-matrix(values,42,1)
+plot(values,ylim =c(0,0.00000001))
+
+Max.Min<-matrix(0,99,1)
+Original<-matrix(0,99,1)
+softmax<-matrix(0,99,1)
+z<-matrix(seq(0.01,0.99,0.01),99,1)
+for ( i in c(1:99)) {
+  Original[i]<-quantile(Data[,2],z[i])
+  softmax[i]<-quantile(Data4[,2],z[i])
+}
+
+
+
+dat<-data.frame(Original,softmax)
+ggplot(dat, aes(x=Original, y=softmax)) +
+  geom_point(shape=5)      # Use hollow circles
+ggplot(dat, aes(x=Original, y=softmax)) +
+  geom_point(shape=1) +    # Use hollow circles
+  geom_smooth(method=lm,level=0.9)  
+
+
+
+```
+
 
 
 
