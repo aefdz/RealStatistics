@@ -1,7 +1,5 @@
 ---
 title: "Composite Index Construction"
-author: "RBA"
-date: 
 output: 
 html_document: 
     code_folding: hide
@@ -17,16 +15,14 @@ library(ggplot2)
 library(Amelia)
 library(leaps)
 ```
-
 ## Introduction
-
 A composite indicator measures multi-dimensional concepts (e.g. competitiveness, e-trade or environmental quality) which cannot be captured by a single indicator. Ideally, a composite indicator should be based on a theoretical framework / definition, which allows individual indicators / variables to be selected, combined and weighted in a manner which reflects the dimensions or structure of the phenomena being measure.
 
 [EU VIDEO](https://www.youtube.com/watch?v=kz9g3d3xn6s)
 
 ## Some Examples
 
-.	Algunos Composite Indicators:
+Some Composite Indicators:
 
 -	Global AgeWatch Index. [GAWI.pdf](courseRBA_3/GAWI.pdf)
 -	HDI. 
@@ -71,9 +67,6 @@ for (i in 1:length(x3)) {
   dif2[i]<-abs(x3[i]-em_estimation[i,3])/x3[i]
 }
 check_value2<-mean(dif2[!is.na(dif2)])
-
-
-
 ```
 
 
