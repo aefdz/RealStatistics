@@ -361,10 +361,21 @@ div.tocify {
 <p>Some Composite Indicators:</p>
 <ul>
 <li>Global AgeWatch Index. <a href="courseRBA_3/GAWI.pdf">GAWI.pdf</a></li>
-<li>HDI. <a href="https://en.wikipedia.org/wiki/Human_Development_Index">Link Wiki</a> <a href="https://www.youtube.com/watch?v=w5wORaWcWPY">EU VIDEO</a></li>
+<li>HDI. <a href="https://en.wikipedia.org/wiki/Human_Development_Index">Link Wiki</a> <a href="https://www.youtube.com/watch?v=w5wORaWcWPY">Australia VIDEO</a></li>
 <li>IQ</li>
-<li>Economic Risk Indicator. <a href="courseRBA_3/Forecast.png">Forecast.png</a></li>
+<li>Economic Risk Indicator. <a href="courseRBA_3/Paper.pdf">Paper.pdf</a></li>
 </ul>
+<p>Another useful applications:</p>
+<ul>
+<li>Forecasting. <a href="courseRBA_3/Forecast.png">Forecast.png</a></li>
+<li>Stress Testing. Density Forecast.</li>
+</ul>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p><a href="courseRBA_3/DataSet.pdf">DataSet.pdf</a></p>
+<p><a href="courseRBA_3/Income.csv">Income.csv</a></p>
+<p><a href="courseRBA_3/Index.csv">Index.csv</a></p>
 </div>
 <div id="missing-value-imputation" class="section level2">
 <h2>Missing Value Imputation</h2>
@@ -372,7 +383,9 @@ div.tocify {
 #Import Data
 path &lt;- &quot;courseRBA_3&quot;
 Data &lt;- read.csv2(paste(path, &quot;Income.csv&quot;, sep = &quot;/&quot;))
+Data2 &lt;- read.csv2(paste(path, &quot;Index.csv&quot;, sep = &quot;/&quot;))
 Data &lt;- apply(Data, 2, as.numeric)
+Data2 &lt;- apply(Data2, 2, as.numeric)
 
 Data_estimate&lt;-data.frame(Data)
 x1&lt;-Data_estimate[,1]
@@ -385,7 +398,7 @@ x4&lt;-Data_estimate[,4]
 dif&lt;-matrix(0,length(x3),1)
 dif2&lt;-matrix(0,length(x3),1)
 Data_estimate&lt;-data.frame(Data_estimate)
-leaps&lt;-regsubsets(x3~x1+x2+x4,data=Data_estimate,nbest=2)
+leaps&lt;-regsubsets(x3~x1+x2+x4,data=Data_estimate,nbest=5)
 plot(leaps,scale=&quot;r2&quot;)</code></pre>
 <p><img src="courseRBA_3_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <pre class="r"><code>fit &lt;- lm(x3~x1+x2+x4)
@@ -393,15 +406,6 @@ for (i in 1:length(x3)) {
   value_estimate=fit$coefficients[1]+fit$coefficients[2]*x2[i]+fit$coefficients[3]*x3[i]+fit$coefficients[4]*x4[i]
   dif[i]&lt;-abs(x3[i]-value_estimate)/x3[i]
   }
-check_value&lt;-mean(dif[!is.na(dif)])
-check_value2&lt;-median(dif[!is.na(dif)])
-check_value3&lt;-sd(dif[!is.na(dif)])
-print(check_value)
-## [1] 0.1814621
-print(check_value2)
-## [1] 0.1354653
-print(check_value3)
-## [1] 0.1739495
 for (i in 1:length(x3)) {
   Data_estim&lt;-Data
   Data_estim[i,3]&lt;-NA
@@ -794,21 +798,25 @@ for (i in 1:length(x3)) {
 ## -- Imputation 1 --
 ## 
 ##   1  2  3
-check_value&lt;-mean(dif2[!is.na(dif2)])
-check_value2&lt;-median(dif2[!is.na(dif2)])
-check_value3&lt;-sd(dif2[!is.na(dif2)])
-print(check_value)
-## [1] 0.1531156
-print(check_value2)
-## [1] 0.1347299
-print(check_value3)
-## [1] 0.1251351
 Errors=cbind(dif,dif2)
 ddf&lt;-data.frame(Errors,GRP = c(&quot;Regression&quot;,&quot;EM&quot;))
 boxplot(Errors ~ GRP, main=&quot;Relative Welfare&quot;,data = ddf, lwd = 1, ylab = &#39;Errors&#39;)
 stripchart(Errors~ GRP,vertical = TRUE, data = ddf, 
            method = &quot;jitter&quot;, add = TRUE, pch = 20, col = c(&#39;blue&#39;,&#39;red&#39;),cex=2)</code></pre>
 <p><img src="courseRBA_3_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<pre class="r"><code>check_value&lt;-mean(dif[!is.na(dif)])
+check_value2&lt;-median(dif[!is.na(dif)])
+check_value3&lt;-sd(dif[!is.na(dif)])
+CV&lt;-c(check_value,check_value2,check_value3)
+check_valueb&lt;-mean(dif2[!is.na(dif2)])
+check_valueb2&lt;-median(dif2[!is.na(dif2)])
+check_valueb3&lt;-sd(dif2[!is.na(dif2)])
+CVb&lt;-matrix(c(check_valueb,check_valueb2,check_valueb3),1,3)
+C&lt;-matrix(cbind(CV,CVb),2,3)
+barplot(C, main=&quot;Blue:Regression; Red: EM&quot;,
+        xlab=&quot;Mean, Median, StDesv&quot;, col=c(&quot;darkblue&quot;,&quot;red&quot;),
+         beside=TRUE)</code></pre>
+<p><img src="courseRBA_3_files/figure-html/unnamed-chunk-1-3.png" width="672" /></p>
 </div>
 <div id="outlier-detection" class="section level2">
 <h2>Outlier Detection</h2>
@@ -821,18 +829,17 @@ x4&lt;-Data_estimate[,4]
 outlier_values &lt;- boxplot.stats(x3)$out  # outlier values.
 print(outlier_values)
 ## [1] 0.5
-boxplot(x3, boxwex=0.7)
-mtext(paste(&quot;Outliers: None&quot;), cex=1)</code></pre>
+boxplot(x2, boxwex=1)</code></pre>
 <p><img src="courseRBA_3_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <pre class="r"><code>#Multivariate
 #Cook DIstance
-mod &lt;- lm(x3 ~ ., data=Data_estimate)
+mod &lt;- lm(x2 ~ ., data=Data_estimate)
 cooksd &lt;- cooks.distance(mod)
 plot(cooksd, pch=&quot;*&quot;, cex=2, main=&quot;Influential Obs by Cooks distance&quot;)  # plot cook&#39;s distance
 abline(h = 4*mean(cooksd, na.rm=T), col=&quot;red&quot;)  # add cutoff line
 text(x=1:length(cooksd)+1, y=cooksd, labels=ifelse(cooksd&gt;4*mean(cooksd, na.rm=T),names(cooksd),&quot;&quot;), col=&quot;red&quot;)</code></pre>
 <p><img src="courseRBA_3_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
-<pre class="r"><code>#Mahalanobi Distance
+<pre class="r"><code>#Mahalanobis Distance
 Data2&lt;-Data_estimate[,c(1:3)]
 n.outliers   &lt;- 2 # Mark as outliers the 2 most extreme points
 m.dist.order &lt;- order(mahalanobis(Data2, colMeans(Data2), cov(Data2)), decreasing=TRUE)
@@ -845,68 +852,75 @@ plot3d(Data2[,1], Data2[,2], Data2[,3], type=&quot;s&quot;, col=col,xlab = &quot
 </div>
 <div id="normalization" class="section level2">
 <h2>Normalization</h2>
-<pre class="r"><code>
+<pre class="r"><code>Data2&lt;-Data
+for (i in 1:4) {
+  Data2[,i]&lt;-scale(Data2[,i],TRUE,TRUE)
+}
 Data3&lt;-Data
   for (i in 1:4) {
     Data3[,i]&lt;-(Data3[,i]-min(Data3[,i]))/(max(Data3[,i])-min(Data3[,i]))
   }
-
-
 Data4&lt;-Data
 for (i in 1:4) {
   Data4[,i]&lt;-SoftMax( Data4[,i], lambda = 2, avg = mean( Data4[,i], na.rm = T), std = sd( Data4[,i], na.rm = T))
 }
 
-RR3&lt;-cor(Data3)
-check_value&lt;-mean(dif[!is.na(dif2)])
-
 RR&lt;-cor(Data)
-Data2&lt;-Data
-for (i in 1:4) {
-  Data2[,i]&lt;-scale(Data2[,i],TRUE,TRUE)
-}
-
 RR2&lt;-cor(Data2)
-dif&lt;-RR-RR2
-check_value&lt;-mean(dif[!is.na(dif)])
-
+RR3&lt;-cor(Data3)
 RR4&lt;-cor(Data4)
-dif&lt;-RR-RR4
-check_value&lt;-mean(dif[!is.na(dif)])
-
-
-values&lt;-matrix(0,4,3)
-for (i in 1:4) {
+dif2&lt;-RR-RR2
+dif3&lt;-RR-RR3
+dif4&lt;-RR-RR4
+check_value&lt;-mean(dif2[!is.na(dif2)])
+check_value2&lt;-mean(dif3[!is.na(dif3)])
+check_value3&lt;-mean(dif4[!is.na(dif4)])
+C&lt;-matrix(c(check_value,check_value2,check_value3),1,3)
+barplot(C, main=&quot;Changes in Correlation Matrix Structure&quot;, 
+        xlab=&quot;Z-Score,Max-Min,Softmax&quot;,col=&quot;blue&quot;)</code></pre>
+<p><img src="courseRBA_3_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>
 par(mfrow=c(2,2))
 hist(Data[,2], col=rgb(0.1,0,1,0.5),xlab=&quot;Original&quot;,main=&quot;Poverty Rate&quot;)
 hist(Data2[,2], col=rgb(0.1,0,1,0.5),xlab=&quot;Standardization&quot;,main=&quot;Poverty Rate&quot;)
 hist(Data3[,2], col=rgb(0.1,0,1,0.5),xlab=&quot;Max.Min&quot;,main=&quot;Poverty Rate&quot;)
-hist(Data3[,2], col=rgb(0.1,0,1,0.5),xlab=&quot;SoftMax&quot;,main=&quot;Poverty Rate&quot;)
+hist(Data3[,2], col=rgb(0.1,0,1,0.5),xlab=&quot;SoftMax&quot;,main=&quot;Poverty Rate&quot;)</code></pre>
+<p><img src="courseRBA_3_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code>
 
-}</code></pre>
-<p><img src="courseRBA_3_files/figure-html/unnamed-chunk-3-1.png" width="672" /><img src="courseRBA_3_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
-<pre class="r"><code>values&lt;-matrix(values,42,1)
-plot(values,ylim =c(0,0.00000001))
 
-Max.Min&lt;-matrix(0,99,1)
 Original&lt;-matrix(0,99,1)
+Zscore&lt;-matrix(0,99,1)
+Max.Min&lt;-matrix(0,99,1)
 softmax&lt;-matrix(0,99,1)
 z&lt;-matrix(seq(0.01,0.99,0.01),99,1)
 for ( i in c(1:99)) {
   Original[i]&lt;-quantile(Data[,2],z[i])
+  Zscore[i]&lt;-quantile(Data2[,2],z[i])
+  Max.Min[i]&lt;-quantile(Data3[,2],z[i])  
   softmax[i]&lt;-quantile(Data4[,2],z[i])
 }
 
 
 
-dat&lt;-data.frame(Original,softmax)
-ggplot(dat, aes(x=Original, y=softmax)) +
-  geom_point(shape=5)      # Use hollow circles
-ggplot(dat, aes(x=Original, y=softmax)) +
+dat&lt;-data.frame(Original,Zscore)
+dat2&lt;-data.frame(Original,Max.Min)
+dat3&lt;-data.frame(Original,softmax)
+
+ggplot(dat, aes(x=Original, y=Zscore)) +
   geom_point(shape=1) +    # Use hollow circles
-  geom_smooth(method=lm,level=0.9)  
-</code></pre>
+  geom_smooth(method=lm,level=0.9)  </code></pre>
 <p><img src="courseRBA_3_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
+<pre class="r"><code>
+ggplot(dat2, aes(x=Original, y=Max.Min)) +
+  geom_point(shape=1) +    # Use hollow circles
+  geom_smooth(method=lm,level=0.9) </code></pre>
+<p><img src="courseRBA_3_files/figure-html/unnamed-chunk-3-4.png" width="672" /></p>
+<pre class="r"><code>
+ggplot(dat3, aes(x=Original, y=softmax)) +
+  geom_point(shape=1) +    # Use hollow circles
+  geom_smooth(method=lm,level=0.9) </code></pre>
+<p><img src="courseRBA_3_files/figure-html/unnamed-chunk-3-5.png" width="672" /></p>
 </div>
 
 
