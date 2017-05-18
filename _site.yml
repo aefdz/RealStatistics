@@ -12,7 +12,7 @@ navbar:
         - text: "Recommender Systems"
           href: courseRBA_2.html
         - text: "Indicators"
-          href: shortcourse_sofr.html
+          href: courseRBA_3.html
         - text: "Stress Test"
           href: shortcourse_fosr.html
         - text: "Clustering"
