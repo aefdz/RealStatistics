@@ -115,7 +115,7 @@ Following this logic one could predict and recommend items to users based on pre
   - Item Based Collaborative Filtering takes the *similarities* between items.
   - User Based Collaborative Filtering considers *similarities* between users.
 
-Association rules are a data mining technique that by product of an algorithm call 'appriori' ends up with a set of relations among items that can be studied with a probability approach. In contrast, the key issue of item based and user based collaborative filterin is how to define similarity. One could think about taking the distance such as $L^P$ or Hausdorff distance,. For example, consider that we want to measure the similarity between items $i_1$ and $i_2$ so its respective vectors are $A=R(,i_1)$ and $B=R(,i_2)$. We could define the similarity of $i_1$ and $i_2$ as the distance $d(i_1, i_2)=\sum_{j=1}^{|U|}((R(,i_1)-R(,i_2))^p)^{1/p}$ being very similar for values close to 0. However, the most employed measure is the so call Cosine Similarity defined as follows
+Association rules are a data mining technique that by product of an algorithm call 'appriori' ends up with a set of relations among items that can be studied with a probability approach. In contrast, the key issue of item based and user based collaborative filterin is how to define similarity. One could think about taking the distance such as $L^P$ or Hausdorff distance,. For example, consider that we want to measure the similarity between items $i_1$ and $i_2$ so its respective vectors are $A=R(,i_1)$ and $B=R(,i_2)$. We could define the similarity of $i_1$ and $i_2$ as the distance $d(i_1, i_2)=(\sum_{j=1}^{|U|}(R(,i_1)-R(,i_2))^p)^{1/p}$ being very similar for values close to 0. However, the most employed measure is the so call Cosine Similarity defined as follows
 \[ Similarity(A,B)=\frac{A B}{||A||_2 ||B||_2}=\frac{\sum_{j=1}^{|U|} A_j B_j}{\sqrt(\sum_{j=1}^{|U|}A_j^2)\sqrt(\sum_{j=1}^{|U|}B_j^2)}.\]
 
 The important thing to know is that the resulting number represents how “similar” the vector $A$ is with respect the vector $B$. The following chunk code is a function for computing the similarity between two vectors.
@@ -222,10 +222,10 @@ for(i in 1:ncol(dataMatrixMusic)) {
   }
 }
 # Back to dataframe
-dataMatrixMusic.similarity <- as.data.frame(dataMatrixMusic.similarity)
+dataMatrixMusic.similarity.Item <- as.data.frame(dataMatrixMusic.similarity)
 ```
 ```{r}
-dataMatrixMusic.similarity[1:5,1:5]
+kable(dataMatrixMusic.similarity.Item[1:5,1:5])
 ```
 
 Note: For loops in R are infernally slow. We use as.matrix() to transform the columns into matrices since matrix operations run a lot faster. We transform the similarity matrix into a data.frame for later processes that we will use.
@@ -236,9 +236,9 @@ We start off by creating a placeholder and then we need to find the neighbours. 
 ```{r, eval=FALSE}
 # Get the top 10 neighbours for each
 top=10+1
-dataMatrix.neighbours <- matrix(NA, nrow=ncol(dataMatrixMusic.similarity),ncol=top,dimnames=list(colnames(dataMatrixMusic.similarity)))
+dataMatrix.neighbours <- matrix(NA, nrow=ncol(dataMatrixMusic.similarity.Item),ncol=top,dimnames=list(colnames(dataMatrixMusic.similarity.Item)))
 for(i in 1:ncol(dataMatrix.ibs)){
-    dataMatrix.neighbours[i,] <-(t(head(n=11,rownames(dataMatrixMusic.similarity[order(dataMatrixMusic.similarity[,i],decreasing=TRUE),][i]))))
+    dataMatrix.neighbours[i,] <-(t(head(n=11,rownames(dataMatrixMusic.similarity.Item[order(dataMatrixMusic.similarity.Item[,i],decreasing=TRUE),][i]))))
 }
 colnames(dataMatrix.neighbours)<-c('band', paste('top', c(1:10), sep=''))
 
@@ -252,6 +252,26 @@ Likewise for people listening to ACDC we would recommend the Red Hot Chilli Pepp
 
 ### User Based
 We will need our similarity matrix for User Based recommendations.
+
+```{r, eval=FALSE}
+dataMatrixMusic.similarity  <- matrix(NA, nrow=nrow(dataMatrixMusic),ncol=nrow(dataMatrixMusic),dimnames=list(rownames(dataMatrixMusic),rownames(dataMatrixMusic)))
+
+# Loop through the columns
+for(i in 1:ncol(dataMatrixMusic)) {
+  # Loop through the columns for each column
+  for(j in 1:ncol(dataMatrixMusic)) {
+    # Fill in placeholder with cosine similarities
+    dataMatrixMusic.similarity[i,j]<-getCosine(as.matrix(dataMatrixMusic[i]),as.matrix(dataMatrixMusic[j]))
+  }
+}
+# Back to dataframe
+dataMatrixMusic.similarity.User <- as.data.frame(dataMatrixMusic.similarity)
+```
+
+```{r}
+kable(dataMatrixMusic.similarity.User[1:5,1:5])
+```
+
 The process behind creating a score matrix for the User Based recommendations is pretty straight forward:
 
   - Choose an item and check if a user consumed that item
@@ -291,7 +311,7 @@ holder <- matrix(NA, nrow=nrow(dataMatrixMusicUsers),ncol=ncol(dataMatrixMusicUs
               } else {
 
            # We first have to get a product's top 10 neighbours sorted by similarity
-             topN<-((head(n=11,(dataMatrixMusic.similarity[order(dataMatrixMusic.similarity[,product],decreasing=TRUE),][product]))))
+             topN<-((head(n=11,(dataMatrixMusic.similarity.User[order(dataMatrixMusic.similarity.User[user,],decreasing=TRUE),][user]))))
              topN.names <- as.character(rownames(topN))
              topN.similarities <- as.numeric(topN[,1])
 
@@ -300,9 +320,9 @@ holder <- matrix(NA, nrow=nrow(dataMatrixMusicUsers),ncol=ncol(dataMatrixMusicUs
              topN.names<-topN.names[-1]
 
            # We then get the user's purchase history for those 10 items
-             topN.purchases<- dataMatrixMusicUsers[,c("user",topN.names)]
-             topN.userPurchases<-topN.purchases[topN.purchases$user==user,]
-             topN.userPurchases <- as.numeric(topN.userPurchases[!(names(topN.userPurchases) %in% c("user"))])
+             topN.purchases<- dataMatrixMusicUsers[topN.names,]
+             topN.userPurchases<-topN.purchases[,product]
+             #topN.userPurchases <- as.numeric(topN.userPurchases[!(names(topN.userPurchases) %in% c("user"))])
 
             # We then calculate the score for that product and that user
              holder[i,j]<-getScore(similarities=topN.similarities,history=topN.userPurchases)
