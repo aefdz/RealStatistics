@@ -780,12 +780,19 @@ for (i in 1:length(x3)) {
 ## -- Imputation 1 --
 ## 
 ##   1  2  3
-check_value2&lt;-mean(dif2[!is.na(dif2)])</code></pre>
+check_value2&lt;-mean(dif2[!is.na(dif2)])
+Errors=cbind(dif,dif2)
+ddf&lt;-data.frame(Errors,GRP = c(&quot;Regression&quot;,&quot;EM&quot;))
+boxplot(Errors ~ GRP, main=&quot;Relative Welfare&quot;,data = ddf, lwd = 1, ylab = &#39;Errors&#39;)
+stripchart(Errors~ GRP,vertical = TRUE, data = ddf, 
+           method = &quot;jitter&quot;, add = TRUE, pch = 20, col = c(&#39;blue&#39;,&#39;red&#39;),cex=2)</code></pre>
+<p><img src="courseRBA_3_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 </div>
-<div id="including-plots" class="section level2">
-<h2>Including Plots</h2>
-<p>You can also embed plots, for example:</p>
+<div id="plots" class="section level2">
+<h2>Plots</h2>
+<p>Step-wise Results</p>
 <p><img src="courseRBA_3_files/figure-html/pressure-1.png" width="672" /></p>
+<p>Box-Plots</p>
 </div>
 
 
@@ -813,7 +820,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

@@ -73,15 +73,24 @@ for (i in 1:length(x3)) {
   dif2[i]<-abs(x3[i]-em_estimation[i,3])/x3[i]
 }
 check_value2<-mean(dif2[!is.na(dif2)])
+Errors=cbind(dif,dif2)
+ddf<-data.frame(Errors,GRP = c("Regression","EM"))
+boxplot(Errors ~ GRP, main="Relative Welfare",data = ddf, lwd = 1, ylab = 'Errors')
+stripchart(Errors~ GRP,vertical = TRUE, data = ddf, 
+           method = "jitter", add = TRUE, pch = 20, col = c('blue','red'),cex=2)
+
 ```
 
 
-## Including Plots
+## Plots
 
-You can also embed plots, for example:
+Step-wise Results
 
 ```{r pressure, echo=FALSE}
 plot(leaps,scale="r2")
 ```
+
+Box-Plots
+
 
 
