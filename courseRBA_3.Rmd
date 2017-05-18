@@ -1,7 +1,7 @@
 ---
 title: "Composite Index Construction"
 output: 
-html_document: 
+  html_document: 
     code_folding: hide
     toc: true
     toc_float: true
@@ -9,12 +9,13 @@ html_document:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, collapse=TRUE)
 library(MASS)
 library(ggplot2)
 library(Amelia)
 library(leaps)
 ```
+
 ## Introduction
 A composite indicator measures multi-dimensional concepts (e.g. competitiveness, e-trade or environmental quality) which cannot be captured by a single indicator. Ideally, a composite indicator should be based on a theoretical framework / definition, which allows individual indicators / variables to be selected, combined and weighted in a manner which reflects the dimensions or structure of the phenomena being measure.
 
@@ -33,7 +34,7 @@ Some Composite Indicators:
 [Forecast.png](courseRBA_3/Forecast.png)
 
 
-```{r, include=FALSE}
+```{r, warning=FALSE}
 options(warn = -1)
 #Import Data
 path <- "courseRBA_3"

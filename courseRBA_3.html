@@ -19,7 +19,11 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
@@ -67,6 +71,7 @@ h6 {
 }
 </style>
 
+<link rel="stylesheet" href="mystyle.css" type="text/css" />
 
 </head>
 
@@ -158,8 +163,111 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -224,6 +332,14 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Composite Index Construction</h1>
@@ -245,6 +361,422 @@ $(document).ready(function () {
 <li>IQ</li>
 <li>Economic Risk Indicator. <a href="courseRBA_3/Forecast.png">Forecast.png</a></li>
 </ul>
+<pre class="r"><code>options(warn = -1)
+#Import Data
+path &lt;- &quot;courseRBA_3&quot;
+Data &lt;- read.csv2(paste(path, &quot;Income.csv&quot;, sep = &quot;/&quot;))
+Data &lt;- apply(Data, 2, as.numeric)
+
+Data_estimate&lt;-data.frame(Data)
+x1&lt;-Data_estimate[,1]
+x2&lt;-Data_estimate[,2]
+x3&lt;-Data_estimate[,3]
+x4&lt;-Data_estimate[,4]
+
+dif&lt;-matrix(0,length(x3),1)
+dif2&lt;-matrix(0,length(x3),1)
+
+Data_estimate&lt;-data.frame(Data_estimate)
+leaps&lt;-regsubsets(x3~x1+x2+x4,data=Data_estimate,nbest=2)
+fit &lt;- lm(x3~x1+x2+x4)
+for (i in 1:length(x3)) {
+  value_estimate=fit$coefficients[1]+fit$coefficients[2]*x2[i]+fit$coefficients[3]*x3[i]+fit$coefficients[4]*x4[i]
+  dif[i]&lt;-abs(x3[i]-value_estimate)/x3[i]
+  }
+check_value&lt;-mean(dif[!is.na(dif)])
+for (i in 1:length(x3)) {
+  Data_estim&lt;-Data
+  Data_estim[i,3]&lt;-NA
+  Data_estimate&lt;-data.frame(Data_estim)
+  a.out &lt;- amelia(Data_estimate, m = 1, boot.type = &quot;none&quot;)
+  unlist(a.out$imputations[[1]])
+  em_estimation&lt;-as.matrix(a.out$imputations[[1]])
+  dif2[i]&lt;-abs(x3[i]-em_estimation[i,3])/x3[i]
+}
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+## 
+## -- Imputation 1 --
+## 
+##   1  2  3
+check_value2&lt;-mean(dif2[!is.na(dif2)])</code></pre>
 </div>
 <div id="including-plots" class="section level2">
 <h2>Including Plots</h2>
@@ -254,6 +786,8 @@ $(document).ready(function () {
 
 
 
+</div>
+</div>
 
 </div>
 
