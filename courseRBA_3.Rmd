@@ -1,0 +1,88 @@
+---
+title: "Composite Index Construction"
+author: "RBA"
+date: 
+output: 
+html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(MASS)
+library(ggplot2)
+library(Amelia)
+library(leaps)
+```
+
+## Introduction
+
+A composite indicator measures multi-dimensional concepts (e.g. competitiveness, e-trade or environmental quality) which cannot be captured by a single indicator. Ideally, a composite indicator should be based on a theoretical framework / definition, which allows individual indicators / variables to be selected, combined and weighted in a manner which reflects the dimensions or structure of the phenomena being measure.
+
+[EU VIDEO](https://www.youtube.com/watch?v=kz9g3d3xn6s)
+
+## Some Examples
+
+.	Algunos Composite Indicators:
+
+-	Global AgeWatch Index. [GAWI.pdf](courseRBA_3/GAWI.pdf)
+-	HDI. 
+  [Link Wiki](https://en.wikipedia.org/wiki/Human_Development_Index)
+  [EU VIDEO](https://www.youtube.com/watch?v=w5wORaWcWPY)
+-	IQ
+-	Economic Risk Indicator.
+[Forecast.png](courseRBA_3/Forecast.png)
+
+
+```{r, include=FALSE}
+options(warn = -1)
+#Import Data
+path <- "courseRBA_3"
+Data <- read.csv2(paste(path, "Income.csv", sep = "/"))
+Data <- apply(Data, 2, as.numeric)
+
+Data_estimate<-data.frame(Data)
+x1<-Data_estimate[,1]
+x2<-Data_estimate[,2]
+x3<-Data_estimate[,3]
+x4<-Data_estimate[,4]
+
+dif<-matrix(0,length(x3),1)
+dif2<-matrix(0,length(x3),1)
+
+Data_estimate<-data.frame(Data_estimate)
+leaps<-regsubsets(x3~x1+x2+x4,data=Data_estimate,nbest=2)
+fit <- lm(x3~x1+x2+x4)
+for (i in 1:length(x3)) {
+  value_estimate=fit$coefficients[1]+fit$coefficients[2]*x2[i]+fit$coefficients[3]*x3[i]+fit$coefficients[4]*x4[i]
+  dif[i]<-abs(x3[i]-value_estimate)/x3[i]
+  }
+check_value<-mean(dif[!is.na(dif)])
+for (i in 1:length(x3)) {
+  Data_estim<-Data
+  Data_estim[i,3]<-NA
+  Data_estimate<-data.frame(Data_estim)
+  a.out <- amelia(Data_estimate, m = 1, boot.type = "none")
+  unlist(a.out$imputations[[1]])
+  em_estimation<-as.matrix(a.out$imputations[[1]])
+  dif2[i]<-abs(x3[i]-em_estimation[i,3])/x3[i]
+}
+check_value2<-mean(dif2[!is.na(dif2)])
+
+
+
+```
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(leaps,scale="r2")
+```
+
+
