@@ -17,7 +17,3 @@ knitr::opts_chunk$set(
 ## Brief Explanation 
 
 The international standards for the construction of stress-tests developed by Central Banks and the FED will be explained, as well as the reason why It is an expanding field of knowledge. The methodology currently applied by international institutions will be presented, and possible improvement methods will be studied. The students will perform a simplified stress test using real data systems.
-
-## Concept
-
-## Application

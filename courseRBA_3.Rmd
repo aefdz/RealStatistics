@@ -54,9 +54,6 @@ Another useful applications:
 
 [Index.csv](courseRBA_3/Index.csv)
 
-
-
-
 ## Missing Value Imputation
 ```{r, warning=FALSE}
 options(warn = -1)
