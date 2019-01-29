@@ -17,8 +17,6 @@ navbar:
           href: shortcourse_fosr.html
         - text: "Clustering"
           href: shortcourse_other.html
-        - text: "Multiple System Estimation"
-          href: shortcourse_other2.html
   right:
     - text: "About"
       href: about.html
