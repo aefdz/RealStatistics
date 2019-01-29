@@ -24,9 +24,10 @@
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
-<link href="site_libs/highlightjs-1.1/default.css" rel="stylesheet" />
-<script src="site_libs/highlightjs-1.1/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -35,10 +36,12 @@
   }
 </style>
 <script type="text/javascript">
-if (window.hljs && document.readyState && document.readyState === "complete") {
-   window.setTimeout(function() {
-      hljs.initHighlighting();
-   }, 0);
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
 }
 </script>
 
@@ -94,8 +97,14 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -111,7 +120,6 @@ body {
   padding-top: 65px;
   margin-top: -65px;
 }
-
 .section h2 {
   padding-top: 65px;
   margin-top: -65px;
@@ -131,6 +139,43 @@ body {
 .section h6 {
   padding-top: 65px;
   margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -152,13 +197,73 @@ $(document).ready(function () {
 });
 </script>
 
-
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
 });
 </script>
 
@@ -171,7 +276,6 @@ $(document).ready(function () {
   window.initializeCodeFolding("hide" === "show");
 });
 </script>
-
 
 
 
@@ -301,16 +405,13 @@ div.tocify {
       <a href="courseRBA_2.html">Recommender Systems</a>
     </li>
     <li>
-      <a href="shortcourse_sofr.html">Indicators</a>
+      <a href="courseRBA_3.html">Indicators</a>
     </li>
     <li>
       <a href="shortcourse_fosr.html">Stress Test</a>
     </li>
     <li>
       <a href="shortcourse_other.html">Clustering</a>
-    </li>
-    <li>
-      <a href="shortcourse_other2.html">Multiple System Estimation</a>
     </li>
   </ul>
 </li>
@@ -349,7 +450,7 @@ div.tocify {
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Almost every people has receipt a recommendation from some Recommender System even if he/she has never heard about it. Selling websites like Amazon or simple browsers as Googleâs are training models from data in order to provide the best product or website to their customers given some information such as sociodemographic characteristics, historical purchased products or likes in websites. Obviously, Recommender Systems (RecSys) are on the spot of many companies and institutions who are trying to provide the most adequate item for a given person.</p>
+<p>Almost every people has receipt a recommendation from some Recommender System even if he/she has never heard about it. Selling websites like Amazon or simple browsers as Google’s are training models from data in order to provide the best product or website to their customers given some information such as sociodemographic characteristics, historical purchased products or likes in websites. Obviously, Recommender Systems (RecSys) are on the spot of many companies and institutions who are trying to provide the most adequate item for a given person.</p>
 <p>In this session, we start by reviewing the different typologies of RecSys. Next, we formalize the problem and introduce the data sets of the case study. The first one is related to transactions in a grocery store and the second one contains users and its listened band music. Finally, we build from the scratch different RecSys methods and apply them for providing merchandasing strategies and product/groups recommendations. The code for applying Collaborative Filtering is not efficient since it is implemented by nested loop, however, in this way we can follow easily each step. The RData file that contains all the results can be dowload <a href="courseRBA_2/resultsCase2.RData">here</a>.</p>
 <div class="figure">
 <img src="courseRBA_2/recSys_example.png" />
@@ -671,23 +772,23 @@ itemFrequencyPlot(Groceries,topN=20,type=&quot;absolute&quot;)</code></pre>
 </div>
 <div id="colaborative-filtering-recsys" class="section level2">
 <h2>Colaborative Filtering RecSys</h2>
-<p>The basic idea of these systems is that if users have revealed the same interests in the past â if they listened or bought the same band or product, for instance â they will also have similar tastes in the future. So, if, for example, user <span class="math inline">\(u_{i_1}\)</span> and user <span class="math inline">\(u_{i_2}\)</span> have a history that is strongly similar each other and user <span class="math inline">\(u_{i_1}\)</span> has recently listened a group that <span class="math inline">\(u_{i_2}\)</span> has not, the basic rationale is to propose this group also to <span class="math inline">\(u_{i_2}\)</span>. In this way, the user <span class="math inline">\(u_{i_1}\)</span> <em>collaborates</em> to filter the most promising bands from a large set.</p>
+<p>The basic idea of these systems is that if users have revealed the same interests in the past – if they listened or bought the same band or product, for instance – they will also have similar tastes in the future. So, if, for example, user <span class="math inline">\(u_{i_1}\)</span> and user <span class="math inline">\(u_{i_2}\)</span> have a history that is strongly similar each other and user <span class="math inline">\(u_{i_1}\)</span> has recently listened a group that <span class="math inline">\(u_{i_2}\)</span> has not, the basic rationale is to propose this group also to <span class="math inline">\(u_{i_2}\)</span>. In this way, the user <span class="math inline">\(u_{i_1}\)</span> <em>collaborates</em> to filter the most promising bands from a large set.</p>
 <p>Following this logic one could predict and recommend items to users based on preference similarities. There are three types of collaborative filtering:</p>
 <ul>
 <li>Association rules.</li>
 <li>Item Based Collaborative Filtering takes the <em>similarities</em> between items.</li>
 <li>User Based Collaborative Filtering considers <em>similarities</em> between users.</li>
 </ul>
-<p>Association rules are a data mining technique that by product of an algorithm call ‘appriori’ ends up with a set of relations among items that can be studied with a probability approach. In contrast, the key issue of item based and user based collaborative filterin is how to define similarity. One could think about taking the distance such as <span class="math inline">\(L^P\)</span> or Hausdorff distance,. For example, consider that we want to measure the similarity between items <span class="math inline">\(i_1\)</span> and <span class="math inline">\(i_2\)</span> so its respective vectors are <span class="math inline">\(A=R(,i_1)\)</span> and <span class="math inline">\(B=R(,i_2)\)</span>. We could define the similarity of <span class="math inline">\(i_1\)</span> and <span class="math inline">\(i_2\)</span> as the distance <span class="math inline">\(d(i_1, i_2)=\sum_{j=1}^{|U|}((R(,i_1)-R(,i_2))^p)^{1/p}\)</span> being very similar for values close to 0. However, the most employed measure is the so call Cosine Similarity defined as follows <span class="math display">\[ Similarity(A,B)=\frac{A B}{||A||_2 ||B||_2}=\frac{\sum_{j=1}^{|U|} A_j B_j}{\sqrt(\sum_{j=1}^{|U|}A_j^2)\sqrt(\sum_{j=1}^{|U|}B_j^2)}.\]</span></p>
-<p>The important thing to know is that the resulting number represents how âsimilarâ the vector <span class="math inline">\(A\)</span> is with respect the vector <span class="math inline">\(B\)</span>. The following chunk code is a function for computing the similarity between two vectors.</p>
+<p>Association rules are a data mining technique that by product of an algorithm call ‘appriori’ ends up with a set of relations among items that can be studied with a probability approach. In contrast, the key issue of item based and user based collaborative filterin is how to define similarity. One could think about taking the distance such as <span class="math inline">\(L^P\)</span> or Hausdorff distance,. For example, consider that we want to measure the similarity between items <span class="math inline">\(i_1\)</span> and <span class="math inline">\(i_2\)</span> so its respective vectors are <span class="math inline">\(A=R(,i_1)\)</span> and <span class="math inline">\(B=R(,i_2)\)</span>. We could define the similarity of <span class="math inline">\(i_1\)</span> and <span class="math inline">\(i_2\)</span> as the distance <span class="math inline">\(d(i_1, i_2)=(\sum_{j=1}^{|U|}(R(,i_1)-R(,i_2))^p)^{1/p}\)</span> being very similar for values close to 0. However, the most employed measure is the so call Cosine Similarity defined as follows <span class="math display">\[ Similarity(A,B)=\frac{A B}{||A||_2 ||B||_2}=\frac{\sum_{j=1}^{|U|} A_j B_j}{\sqrt(\sum_{j=1}^{|U|}A_j^2)\sqrt(\sum_{j=1}^{|U|}B_j^2)}.\]</span></p>
+<p>The important thing to know is that the resulting number represents how “similar” the vector <span class="math inline">\(A\)</span> is with respect the vector <span class="math inline">\(B\)</span>. The following chunk code is a function for computing the similarity between two vectors.</p>
 <pre class="r"><code>getCosine &lt;- function(x,y){
     similarity &lt;- sum(x*y) / (sqrt(sum(x*x)) * sqrt(sum(y*y)))
     return(similarity)
 }</code></pre>
 <div id="association-rules" class="section level3">
 <h3>Association Rules</h3>
-<p>The outcome of this type of technique, in simple terms, is a set of rules that can be understood as âif this, then thatâ.</p>
-<p>This gives us our rules which are represented as follows: <span class="math display">\[ \{ i_1,i_2 \} \rightarrow \{ i_k \}\]</span> Which can be read as âif a user buys an item in the item set on the left hand side, then the user will likely buy the item on the right hand side tooâ. A more human readable example is: <span class="math display">\[ \{coffee,sugar \} \rightarrow \{milk\}\]</span> If a customer buys coffee and sugar, then they are also likely to buy milk. With this we can understand three important ratios; the support, confidence and lift. We describe the significance of these in the following bullet points, but if you are interested in a formal mathematical definition you can find it on <a href="https://en.wikipedia.org/wiki/Association_rule_learning">wikipedia</a>.</p>
+<p>The outcome of this type of technique, in simple terms, is a set of rules that can be understood as “if this, then that”.</p>
+<p>This gives us our rules which are represented as follows: <span class="math display">\[ \{ i_1,i_2 \} \rightarrow \{ i_k \}\]</span> Which can be read as “if a user buys an item in the item set on the left hand side, then the user will likely buy the item on the right hand side too”. A more human readable example is: <span class="math display">\[ \{coffee,sugar \} \rightarrow \{milk\}\]</span> If a customer buys coffee and sugar, then they are also likely to buy milk. With this we can understand three important ratios; the support, confidence and lift. We describe the significance of these in the following bullet points, but if you are interested in a formal mathematical definition you can find it on <a href="https://en.wikipedia.org/wiki/Association_rule_learning">wikipedia</a>.</p>
 <p><strong>Support of item</strong> <span class="math inline">\(i_j\)</span>. The fraction of which our item set occurs in our dataset, in other words, the empirical probability of observing item <span class="math inline">\(i_j\)</span> if we select an item randomly.</p>
 <p><strong>Confidence of</strong> <span class="math inline">\(i_{j_1} \rightarrow i_{j_2}\)</span>. Probability that a rule is correct for a new transaction with items on the left. Conditional probability of observing <span class="math inline">\(i_{j_2}\)</span> given that <span class="math inline">\(i_{j_1}\)</span> was observed.</p>
 <p><span class="math display">\[P(i_{j_2} | i_{j_1}) = \frac{P(i_{j_2} \cap i_{j_1})}{P(i_{j_1})}\]</span></p>
@@ -726,7 +827,13 @@ inspect(rules[1:5])
 ## [2] {curd,cereals}          =&gt; {whole milk}   0.0010  0.91        3.6
 ## [3] {yogurt,cereals}        =&gt; {whole milk}   0.0017  0.81        3.2
 ## [4] {butter,jam}            =&gt; {whole milk}   0.0010  0.83        3.3
-## [5] {soups,bottled beer}    =&gt; {whole milk}   0.0011  0.92        3.6</code></pre>
+## [5] {soups,bottled beer}    =&gt; {whole milk}   0.0011  0.92        3.6
+##     count
+## [1] 19   
+## [2] 10   
+## [3] 17   
+## [4] 10   
+## [5] 11</code></pre>
 <p>We can call the function summary for obtaining some more information about the result,</p>
 <pre class="r"><code>summary(rules)
 ## set of 410 rules
@@ -739,13 +846,13 @@ inspect(rules[1:5])
 ##     3.0     4.0     4.0     4.3     5.0     6.0 
 ## 
 ## summary of quality measures:
-##     support          confidence        lift     
-##  Min.   :0.00102   Min.   :0.80   Min.   : 3.1  
-##  1st Qu.:0.00102   1st Qu.:0.83   1st Qu.: 3.3  
-##  Median :0.00122   Median :0.85   Median : 3.6  
-##  Mean   :0.00125   Mean   :0.87   Mean   : 4.0  
-##  3rd Qu.:0.00132   3rd Qu.:0.91   3rd Qu.: 4.3  
-##  Max.   :0.00315   Max.   :1.00   Max.   :11.2  
+##     support          confidence        lift          count     
+##  Min.   :0.00102   Min.   :0.80   Min.   : 3.1   Min.   :10.0  
+##  1st Qu.:0.00102   1st Qu.:0.83   1st Qu.: 3.3   1st Qu.:10.0  
+##  Median :0.00122   Median :0.85   Median : 3.6   Median :12.0  
+##  Mean   :0.00125   Mean   :0.87   Mean   : 4.0   Mean   :12.3  
+##  3rd Qu.:0.00132   3rd Qu.:0.91   3rd Qu.: 4.3   3rd Qu.:13.0  
+##  Max.   :0.00315   Max.   :1.00   Max.   :11.2   Max.   :31.0  
 ## 
 ## mining info:
 ##       data ntransactions support confidence
@@ -753,21 +860,21 @@ inspect(rules[1:5])
 <p>Often we will want the most relevant rules first because, for example, one would want to have the most likely rules. We can easily sort by confidence by executing the following code.</p>
 <pre class="r"><code>rules&lt;-sort(rules, by=&quot;confidence&quot;, decreasing=TRUE)
 inspect(rules[1:5])
-##     lhs                     rhs          support confidence lift
-## [1] {rice,                                                      
-##      sugar}              =&gt; {whole milk}  0.0012          1  3.9
-## [2] {canned fish,                                               
-##      hygiene articles}   =&gt; {whole milk}  0.0011          1  3.9
-## [3] {root vegetables,                                           
-##      butter,                                                    
-##      rice}               =&gt; {whole milk}  0.0010          1  3.9
-## [4] {root vegetables,                                           
-##      whipped/sour cream,                                        
-##      flour}              =&gt; {whole milk}  0.0017          1  3.9
-## [5] {butter,                                                    
-##      soft cheese,                                               
-##      domestic eggs}      =&gt; {whole milk}  0.0010          1  3.9</code></pre>
-<p>We can limit the number of items by including âmaxlenâ parameter to the apriori function,</p>
+##     lhs                     rhs          support confidence lift count
+## [1] {rice,                                                            
+##      sugar}              =&gt; {whole milk}  0.0012          1  3.9    12
+## [2] {canned fish,                                                     
+##      hygiene articles}   =&gt; {whole milk}  0.0011          1  3.9    11
+## [3] {root vegetables,                                                 
+##      butter,                                                          
+##      rice}               =&gt; {whole milk}  0.0010          1  3.9    10
+## [4] {root vegetables,                                                 
+##      whipped/sour cream,                                              
+##      flour}              =&gt; {whole milk}  0.0017          1  3.9    17
+## [5] {butter,                                                          
+##      soft cheese,                                                     
+##      domestic eggs}      =&gt; {whole milk}  0.0010          1  3.9    10</code></pre>
+<p>We can limit the number of items by including “maxlen” parameter to the apriori function,</p>
 <pre class="r"><code>rules &lt;- apriori(Groceries, parameter = list(supp = 0.001, conf = 0.8,maxlen=3))
 ## Apriori
 ## 
@@ -791,7 +898,7 @@ inspect(rules[1:5])
 ## Warning in apriori(Groceries, parameter = list(supp = 0.001, conf =
 ## 0.8, : Mining stopped (maxlen reached). Only patterns up to a length of 3
 ## returned!
-##  done [0.00s].
+##  done [0.01s].
 ## writing ... [29 rule(s)] done [0.00s].
 ## creating S4 object  ... done [0.00s].
 inspect(rules[1:5])
@@ -800,8 +907,14 @@ inspect(rules[1:5])
 ## [2] {curd,cereals}          =&gt; {whole milk}   0.0010  0.91        3.6
 ## [3] {yogurt,cereals}        =&gt; {whole milk}   0.0017  0.81        3.2
 ## [4] {butter,jam}            =&gt; {whole milk}   0.0010  0.83        3.3
-## [5] {soups,bottled beer}    =&gt; {whole milk}   0.0011  0.92        3.6</code></pre>
-<p>Now that we know how to generate rules, limit the output, lets say we wanted to target items to generate rules. There are two types of targets we might be interested in that are illustrated with an example of âwhole milkâ:</p>
+## [5] {soups,bottled beer}    =&gt; {whole milk}   0.0011  0.92        3.6
+##     count
+## [1] 19   
+## [2] 10   
+## [3] 17   
+## [4] 10   
+## [5] 11</code></pre>
+<p>Now that we know how to generate rules, limit the output, lets say we wanted to target items to generate rules. There are two types of targets we might be interested in that are illustrated with an example of “whole milk”:</p>
 <ul>
 <li>What are customers likely to buy before buying whole milk</li>
 <li>What are customers likely to buy if they purchase whole milk?</li>
@@ -812,21 +925,21 @@ inspect(rules[1:5])
                control = list(verbose=F))
 rules&lt;-sort(rules, decreasing=TRUE,by=&quot;confidence&quot;)
 inspect(rules[1:5])
-##     lhs                     rhs          support confidence lift
-## [1] {rice,                                                      
-##      sugar}              =&gt; {whole milk}  0.0012          1  3.9
-## [2] {canned fish,                                               
-##      hygiene articles}   =&gt; {whole milk}  0.0011          1  3.9
-## [3] {root vegetables,                                           
-##      butter,                                                    
-##      rice}               =&gt; {whole milk}  0.0010          1  3.9
-## [4] {root vegetables,                                           
-##      whipped/sour cream,                                        
-##      flour}              =&gt; {whole milk}  0.0017          1  3.9
-## [5] {butter,                                                    
-##      soft cheese,                                               
-##      domestic eggs}      =&gt; {whole milk}  0.0010          1  3.9</code></pre>
-<p>Likewise, we can set the left hand side to be âwhole milkâ and find its antecedents. Note the following:</p>
+##     lhs                     rhs          support confidence lift count
+## [1] {rice,                                                            
+##      sugar}              =&gt; {whole milk}  0.0012          1  3.9    12
+## [2] {canned fish,                                                     
+##      hygiene articles}   =&gt; {whole milk}  0.0011          1  3.9    11
+## [3] {root vegetables,                                                 
+##      butter,                                                          
+##      rice}               =&gt; {whole milk}  0.0010          1  3.9    10
+## [4] {root vegetables,                                                 
+##      whipped/sour cream,                                              
+##      flour}              =&gt; {whole milk}  0.0017          1  3.9    17
+## [5] {butter,                                                          
+##      soft cheese,                                                     
+##      domestic eggs}      =&gt; {whole milk}  0.0010          1  3.9    10</code></pre>
+<p>Likewise, we can set the left hand side to be “whole milk” and find its antecedents. Note the following:</p>
 <ul>
 <li>We set the confidence to 0.15 since we get no rules with 0.8</li>
 <li>We set a minimum length of 2 to avoid empty left hand side items</li>
@@ -834,16 +947,16 @@ inspect(rules[1:5])
 <pre class="r"><code>rules&lt;-apriori(data=Groceries, parameter=list(supp=0,conf =0.15,minlen=2),appearance=list(default=&quot;rhs&quot;,lhs=&quot;whole milk&quot;),control = list(verbose=F))
 rules&lt;-sort(rules, decreasing=TRUE,by=&quot;confidence&quot;)
 inspect(rules[1:5])
-##     lhs             rhs                support confidence lift
-## [1] {whole milk} =&gt; {other vegetables} 0.075   0.29       1.5 
-## [2] {whole milk} =&gt; {rolls/buns}       0.057   0.22       1.2 
-## [3] {whole milk} =&gt; {yogurt}           0.056   0.22       1.6 
-## [4] {whole milk} =&gt; {root vegetables}  0.049   0.19       1.8 
-## [5] {whole milk} =&gt; {tropical fruit}   0.042   0.17       1.6</code></pre>
+##     lhs             rhs                support confidence lift count
+## [1] {whole milk} =&gt; {other vegetables} 0.075   0.29       1.5  736  
+## [2] {whole milk} =&gt; {rolls/buns}       0.057   0.22       1.2  557  
+## [3] {whole milk} =&gt; {yogurt}           0.056   0.22       1.6  551  
+## [4] {whole milk} =&gt; {root vegetables}  0.049   0.19       1.8  481  
+## [5] {whole milk} =&gt; {tropical fruit}   0.042   0.17       1.6  416</code></pre>
 </div>
 <div id="item-based" class="section level3">
 <h3>Item Based</h3>
-<p>We first calculate the similarity of each song with the rest of the songs. This means that we want to compare each column in our âdataMatrixMusicâ data set with every other column in the data set. Specifically, we will define similarity with the âCosine Similarityâ.</p>
+<p>We first calculate the similarity of each song with the rest of the songs. This means that we want to compare each column in our “dataMatrixMusic” data set with every other column in the data set. Specifically, we will define similarity with the “Cosine Similarity”.</p>
 <pre class="r"><code>dataMatrixMusic.similarity  &lt;- matrix(NA, nrow=ncol(dataMatrixMusic),ncol=ncol(dataMatrixMusic),dimnames=list(colnames(dataMatrixMusic),colnames(dataMatrixMusic)))
 
 # Loop through the columns
@@ -855,21 +968,15 @@ for(i in 1:ncol(dataMatrixMusic)) {
   }
 }
 # Back to dataframe
-dataMatrixMusic.similarity &lt;- as.data.frame(dataMatrixMusic.similarity)</code></pre>
-<pre class="r"><code>dataMatrixMusic.similarity[1:5,1:5]
-##                  a.perfect.circle  abba ac.dc adam.green aerosmith
-## a.perfect.circle            1.000 0.000 0.018      0.052     0.063
-## abba                        0.000 1.000 0.052      0.025     0.061
-## ac.dc                       0.018 0.052 1.000      0.113     0.177
-## adam.green                  0.052 0.025 0.113      1.000     0.057
-## aerosmith                   0.063 0.061 0.177      0.057     1.000</code></pre>
+dataMatrixMusic.similarity.Item &lt;- as.data.frame(dataMatrixMusic.similarity)</code></pre>
+<pre class="r"><code>#kable(dataMatrixMusic.similarity.Item[1:5,1:5])</code></pre>
 <p>Note: For loops in R are infernally slow. We use as.matrix() to transform the columns into matrices since matrix operations run a lot faster. We transform the similarity matrix into a data.frame for later processes that we will use.</p>
-<p>We are now in a position to make recommendations! We look at the top 10 neighbours of each song â those would be the recommendations we make to people listening to those songs. We start off by creating a placeholder and then we need to find the neighbours. This is another loop but runs much faster.</p>
+<p>We are now in a position to make recommendations! We look at the top 10 neighbours of each song – those would be the recommendations we make to people listening to those songs. We start off by creating a placeholder and then we need to find the neighbours. This is another loop but runs much faster.</p>
 <pre class="r"><code># Get the top 10 neighbours for each
 top=10+1
-dataMatrix.neighbours &lt;- matrix(NA, nrow=ncol(dataMatrixMusic.similarity),ncol=top,dimnames=list(colnames(dataMatrixMusic.similarity)))
+dataMatrix.neighbours &lt;- matrix(NA, nrow=ncol(dataMatrixMusic.similarity.Item),ncol=top,dimnames=list(colnames(dataMatrixMusic.similarity.Item)))
 for(i in 1:ncol(dataMatrix.ibs)){
-    dataMatrix.neighbours[i,] &lt;-(t(head(n=11,rownames(dataMatrixMusic.similarity[order(dataMatrixMusic.similarity[,i],decreasing=TRUE),][i]))))
+    dataMatrix.neighbours[i,] &lt;-(t(head(n=11,rownames(dataMatrixMusic.similarity.Item[order(dataMatrixMusic.similarity.Item[,i],decreasing=TRUE),][i]))))
 }
 colnames(dataMatrix.neighbours)&lt;-c(&#39;band&#39;, paste(&#39;top&#39;, c(1:10), sep=&#39;&#39;))
 </code></pre>
@@ -962,10 +1069,24 @@ colnames(dataMatrix.neighbours)&lt;-c(&#39;band&#39;, paste(&#39;top&#39;, c(1:1
 </div>
 <div id="user-based" class="section level3">
 <h3>User Based</h3>
-<p>We will need our similarity matrix for User Based recommendations. The process behind creating a score matrix for the User Based recommendations is pretty straight forward:</p>
+<p>We will need our similarity matrix for User Based recommendations.</p>
+<pre class="r"><code>dataMatrixMusic.similarity  &lt;- matrix(NA, nrow=nrow(dataMatrixMusic),ncol=nrow(dataMatrixMusic),dimnames=list(rownames(dataMatrixMusic),rownames(dataMatrixMusic)))
+
+# Loop through the columns
+for(i in 1:ncol(dataMatrixMusic)) {
+  # Loop through the columns for each column
+  for(j in 1:ncol(dataMatrixMusic)) {
+    # Fill in placeholder with cosine similarities
+    dataMatrixMusic.similarity[i,j]&lt;-getCosine(as.matrix(dataMatrixMusic[i]),as.matrix(dataMatrixMusic[j]))
+  }
+}
+# Back to dataframe
+dataMatrixMusic.similarity.User &lt;- as.data.frame(dataMatrixMusic.similarity)</code></pre>
+<pre class="r"><code>#kable(dataMatrixMusic.similarity.User[1:5,1:5])</code></pre>
+<p>The process behind creating a score matrix for the User Based recommendations is pretty straight forward:</p>
 <ul>
 <li>Choose an item and check if a user consumed that item</li>
-<li>Get the similarities of that itemâs top X neighbours</li>
+<li>Get the similarities of that item’s top X neighbours</li>
 <li>Get the consumption record of the user of the top X neighbours</li>
 <li>Calculate the score with a formula: sumproduct(purchaseHistory, similarities)/sum(similarities)</li>
 </ul>
@@ -996,7 +1117,7 @@ colnames(dataMatrix.neighbours)&lt;-c(&#39;band&#39;, paste(&#39;top&#39;, c(1:1
               } else {
 
            # We first have to get a product&#39;s top 10 neighbours sorted by similarity
-             topN&lt;-((head(n=11,(dataMatrixMusic.similarity[order(dataMatrixMusic.similarity[,product],decreasing=TRUE),][product]))))
+             topN&lt;-((head(n=11,(dataMatrixMusic.similarity.User[order(dataMatrixMusic.similarity.User[user,],decreasing=TRUE),][user]))))
              topN.names &lt;- as.character(rownames(topN))
              topN.similarities &lt;- as.numeric(topN[,1])
 
@@ -1005,9 +1126,9 @@ colnames(dataMatrix.neighbours)&lt;-c(&#39;band&#39;, paste(&#39;top&#39;, c(1:1
              topN.names&lt;-topN.names[-1]
 
            # We then get the user&#39;s purchase history for those 10 items
-             topN.purchases&lt;- dataMatrixMusicUsers[,c(&quot;user&quot;,topN.names)]
-             topN.userPurchases&lt;-topN.purchases[topN.purchases$user==user,]
-             topN.userPurchases &lt;- as.numeric(topN.userPurchases[!(names(topN.userPurchases) %in% c(&quot;user&quot;))])
+             topN.purchases&lt;- dataMatrixMusicUsers[topN.names,]
+             topN.userPurchases&lt;-topN.purchases[,product]
+             #topN.userPurchases &lt;- as.numeric(topN.userPurchases[!(names(topN.userPurchases) %in% c(&quot;user&quot;))])
 
             # We then calculate the score for that product and that user
              holder[i,j]&lt;-getScore(similarities=topN.similarities,history=topN.userPurchases)
@@ -1022,10 +1143,10 @@ dataMatrixMusic.user.scores.holder &lt;- matrix(NA, nrow=nrow(dataMatrixMusic.us
 for(i in 1:nrow(dataMatrixMusic.user.scores)){
   dataMatrixMusic.user.scores.holder[i,] &lt;- names(head(n=100,(dataMatrixMusic.user.scores[,order(dataMatrixMusic.user.scores[i,],decreasing=TRUE)])[i,]))
 }</code></pre>
-<p>The loop starts by taking each user (row) and then jumps into another loop that takes each column (artists). We then store the userâs name and artist name in variables to use them easily later. We then use an if statement to filter out artists that a user has already listened to â this is a business case decision.</p>
+<p>The loop starts by taking each user (row) and then jumps into another loop that takes each column (artists). We then store the user’s name and artist name in variables to use them easily later. We then use an if statement to filter out artists that a user has already listened to – this is a business case decision.</p>
 <p>The next bit gets the item based similarity scores for the artist under consideration.</p>
-<p>It is important to note the number of artists you pick matters. We pick the top 10. We store the similarities score and song names. We also drop the first column because, as we saw, it always represents the same song. Weâre almost there. We just need the userâs purchase history for the top 10 songs.</p>
-<p>We use the original data set to get the purchases of our usersâ top 10 purchases. We filter out our current user in the loop and then filter out purchases that match the user. We are now ready to calculate the score and store it in our holder matrix:</p>
+<p>It is important to note the number of artists you pick matters. We pick the top 10. We store the similarities score and song names. We also drop the first column because, as we saw, it always represents the same song. We’re almost there. We just need the user’s purchase history for the top 10 songs.</p>
+<p>We use the original data set to get the purchases of our users’ top 10 purchases. We filter out our current user in the loop and then filter out purchases that match the user. We are now ready to calculate the score and store it in our holder matrix:</p>
 <p>Once we are done we can store the results in a data frame. The results should look something like this:</p>
 <pre class="r"><code>kable(dataMatrixMusic.user.scores[1:5,1:10])</code></pre>
 <table>
@@ -1112,7 +1233,7 @@ for(i in 1:nrow(dataMatrixMusic.user.scores)){
 </tr>
 </tbody>
 </table>
-<p>This basically reads that for user 51 we would recommend abba first, then a perfect circle, and we would not recommend ACDC. This is not very pretty â¦ so lets make it pretty: We will create another holder matrix and for each user score we will sort the scores and store the artist names in rank order.</p>
+<p>This basically reads that for user 51 we would recommend abba first, then a perfect circle, and we would not recommend ACDC. This is not very pretty … so lets make it pretty: We will create another holder matrix and for each user score we will sort the scores and store the artist names in rank order.</p>
 </div>
 </div>
 
@@ -1141,7 +1262,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
