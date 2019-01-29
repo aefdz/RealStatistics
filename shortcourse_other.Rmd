@@ -1,0 +1,20 @@
+---
+title: "Clustering"
+output:
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+    css: mystyle.css
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE
+)
+```
+
+## Brief Explanation 
+
+One of the main goals referred to in the economic development literature is the need to fight and eradicate poverty. However, in order for economic policies to be efficient, it is highly important to properly understand and establish the target of such policies (the poorest). In this paper, we propose a new methodology based on a multivariate approach to determine the profile of the poorest in Tanzania. Through the application of Monge-Kantarovich’s depth measure and Voronoi’s iteration, we see that variables such as the quality of health or the access to supplies play crucial roles in the correct
+measurement of poverty in Tanzania.

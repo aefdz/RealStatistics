@@ -225,7 +225,7 @@ for(i in 1:ncol(dataMatrixMusic)) {
 dataMatrixMusic.similarity.Item <- as.data.frame(dataMatrixMusic.similarity)
 ```
 ```{r}
-kable(dataMatrixMusic.similarity.Item[1:5,1:5])
+#kable(dataMatrixMusic.similarity.Item[1:5,1:5])
 ```
 
 Note: For loops in R are infernally slow. We use as.matrix() to transform the columns into matrices since matrix operations run a lot faster. We transform the similarity matrix into a data.frame for later processes that we will use.
@@ -244,7 +244,7 @@ colnames(dataMatrix.neighbours)<-c('band', paste('top', c(1:10), sep=''))
 
 ```
 ```{r}
-kable(dataMatrix.neighbours[1:5,2:top])
+#kable(dataMatrix.neighbours[1:5,2:top])
 ```
 
 This means for those listening to Abba we would recommend Madonna and Robbie Williams.
@@ -269,7 +269,7 @@ dataMatrixMusic.similarity.User <- as.data.frame(dataMatrixMusic.similarity)
 ```
 
 ```{r}
-kable(dataMatrixMusic.similarity.User[1:5,1:5])
+#kable(dataMatrixMusic.similarity.User[1:5,1:5])
 ```
 
 The process behind creating a score matrix for the User Based recommendations is pretty straight forward:
@@ -358,7 +358,7 @@ Once we are done we can store the results in a data frame.
 The results should look something like this:
 
 ```{r}
-kable(dataMatrixMusic.user.scores[1:5,1:10])
+#kable(dataMatrixMusic.user.scores[1:5,1:10])
 ```
 
 This basically reads that for user 51 we would recommend abba first, then a perfect circle, and we would not recommend ACDC.
