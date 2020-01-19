@@ -1,27 +1,28 @@
 name: "RBA"
 output_dir: "."
 navbar:
-  title: "Real Business Analytics"
+  title: "Real Statistics"
   left:
-    - text: "The Project"
-      href: plenary.html
     - text: "Case Studies"
       menu:
         - text: "R and Rmarkdown"
-          href: courseRBA_1.html
+          href: Rmarkdown.html
         - text: "Recommender Systems"
-          href: courseRBA_2.html
+          href: recsys.html
         - text: "Indicators"
-          href: courseRBA_3.html
+          href: compositeIndex.html
         - text: "Stress Test"
-          href: shortcourse_fosr.html
+          href: stressTest.html
         - text: "Clustering"
-          href: shortcourse_other.html
+          href: clustering.html
+        - text: "Web Scraping"
+          href: webScraping.html
   right:
     - text: "About"
-      href: about.html
+      href: aboutWeb.html
     - icon: fa-github fa-lg
-      href: https://github.com/
+      href: https://github.com/aefdz/RealStatisticsAnalytics
+
 output:
   html_document:
     theme: flatly

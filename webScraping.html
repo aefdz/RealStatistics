@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Web Scraping</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="mystyle.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Real Statistics</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Case Studies
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Rmarkdown.html">R and Rmarkdown</a>
+    </li>
+    <li>
+      <a href="recsys.html">Recommender Systems</a>
+    </li>
+    <li>
+      <a href="compositeIndex.html">Indicators</a>
+    </li>
+    <li>
+      <a href="stressTest.html">Stress Test</a>
+    </li>
+    <li>
+      <a href="clustering.html">Clustering</a>
+    </li>
+    <li>
+      <a href="webScraping.html">Web Scraping</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="aboutWeb.html">About</a>
+</li>
+<li>
+  <a href="https://github.com/aefdz/RealStatisticsAnalytics">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Web Scraping</h1>
+
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This case study aims to show how to get the information from a website and exploit statistically its contents. In general, we can think about this task, called web scraping, as a process involving the following three steps:</p>
+<ol style="list-style-type: decimal">
+<li>Access to a web page.</li>
+<li>Download the source files that generate the web.</li>
+<li>Make the downloaded data understadable and proper to your goals.</li>
+</ol>
+<p>The steps above could be done in many different ways, from completely automated implementations to a completely manual work. This time, I will use R to save some time and develope a repreduible code to give an answer to the problem above. We will make use of the <code>rvest</code> and <code>xml2</code> packages.</p>
+<p>To see other problems and learn more above it, I recommend to have a look to the following links:</p>
+<ul>
+<li><a href="https://www.freecodecamp.org/news/an-introduction-to-web-scraping-using-r-40284110c848/">An introduction to web scraping using R (freeCodeCamp)</a></li>
+<li><a href="https://towardsdatascience.com/tidy-web-scraping-in-r-tutorial-and-resources-ac9f72b4fe47">Tidy web scraping in R — Tutorial and resources (towards data science)</a></li>
+</ul>
+</div>
+<div id="the-problem" class="section level2">
+<h2>The problem</h2>
+<p>I am willing to publish some contents from my thesis in the <a href="https://amstat.tandfonline.com/loi/uasa20"><em>Journal of the American Statistical Association</em></a>. However, I am afraid of bothering the Editor and Referees with a very long article.</p>
+<p>One could simply ask to his/her experienced colleges or check the rules for submitting an article. Nevertheless, I prefer to empirical check the Journal’s standards by scraping a resonable set of information from its website’s <a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>.</p>
+</div>
+<div id="web-scraping-in-r" class="section level2">
+<h2>Web Scraping in R</h2>
+<div id="accessing-a-page-from-r" class="section level3">
+<h3>1. Accessing a page from R</h3>
+<p>First, we need to specify the web address to R and made R read the source files of the web (in particular the HTML). Suppose we will start from the last published <a href="https://amstat.tandfonline.com/toc/uasa20/114/528?nav=tocList">issue</a>.</p>
+<div class="figure">
+<img src="webScraping/jasa.JPG" alt="Inspecting the target website" />
+<p class="caption">Inspecting the target website</p>
+</div>
+<pre class="r"><code>#Specifying the url
+targetWeb &lt;- &quot;https://amstat.tandfonline.com/toc/uasa20/114/528?nav=tocList&quot;
+
+#reading the html content
+JASAweb &lt;- read_html(targetWeb)
+
+#see elements
+JASAweb %&gt;% html_node(&quot;body&quot;) %&gt;% html_children()</code></pre>
+<pre><code>## {xml_nodeset (5)}
+## [1] &lt;script&gt;(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({&#39;gtm.start&#39;:new Dat ...
+## [2] &lt;noscript&gt;&lt;iframe src=&quot;https://www.googletagmanager.com/ns.html?id=GTM-W2 ...
+## [3] &lt;script type=&quot;text/javascript&quot;&gt;\n    if(false) {\n        document.getEle ...
+## [4] &lt;script type=&quot;text/javascript&quot;&gt;\n        var content = $(&#39;[name=&quot;pbContex ...
+## [5] &lt;div id=&quot;pb-page-content&quot; data-ng-non-bindable&gt;\n&lt;div data-pb-dropzone=&quot;m ...</code></pre>
+</div>
+<div id="teaching-r-how-to-find-the-information" class="section level3">
+<h3>2. Teaching R how to find the information</h3>
+<p>Next, we will make use of HTML tags for extracting data using Inspect Element. Go to the web site and see the HTML tags.</p>
+<div class="figure">
+<img src="webScraping/pages.JPG" alt="Recognizing the information of interest." />
+<p class="caption">Recognizing the information of interest.</p>
+</div>
+<p>In order to find out the class of the HTML tag, use the following steps:</p>
+<p>Based on CSS selectors such as class and id, we will scrape the data from the HTML. To find the CSS class for the product title, we need to right-click on title and select “Inspect” or “Inspect Element”.</p>
+<div class="figure">
+<img src="webScraping/tags.JPG" alt="Finding out the tags." />
+<p class="caption">Finding out the tags.</p>
+</div>
+<pre class="r"><code>pages_items &lt;- JASAweb %&gt;% 
+ html_node(&quot;body&quot;) %&gt;% xml_find_all(&quot;//div[contains(@class, &#39;tocPageRange maintextleft&#39;)]&quot;)
+
+pages_items</code></pre>
+<pre><code>## {xml_nodeset (42)}
+##  [1] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1427-1435&lt;/div&gt;\n
+##  [2] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1436-1449&lt;/div&gt;\n
+##  [3] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1450-1465&lt;/div&gt;\n
+##  [4] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1466-1480&lt;/div&gt;\n
+##  [5] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1481-1492&lt;/div&gt;\n
+##  [6] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1493-1504&lt;/div&gt;\n
+##  [7] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1505-1517&lt;/div&gt;\n
+##  [8] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1518-1531&lt;/div&gt;\n
+##  [9] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1532-1546&lt;/div&gt;\n
+## [10] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1547-1560&lt;/div&gt;\n
+## [11] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1561-1573&lt;/div&gt;\n
+## [12] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1574-1596&lt;/div&gt;\n
+## [13] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1597-1601&lt;/div&gt;\n
+## [14] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1602-1604&lt;/div&gt;\n
+## [15] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1605-1610&lt;/div&gt;\n
+## [16] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1611-1615&lt;/div&gt;\n
+## [17] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1616-1619&lt;/div&gt;\n
+## [18] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1620-1637&lt;/div&gt;\n
+## [19] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1638-1650&lt;/div&gt;\n
+## [20] &lt;div class=&quot;tocPageRange maintextleft&quot;&gt;Pages: 1651-1664&lt;/div&gt;\n
+## ...</code></pre>
+</div>
+<div id="data-arranging" class="section level3">
+<h3>3. Data arranging</h3>
+<p>Now we need to make the information understandable to R. The next chunk of code goes from a the HTML information to the numeric vector containning the length page of the last issue articles.</p>
+<pre class="r"><code>#arrage the data. Take html text, get the page number as a character and split.
+auxPages &lt;- pages_items %&gt;% html_text() %&gt;% substring(8) %&gt;% strsplit(&quot;-&quot;)
+
+#numeric vector with starting Pages and ending pages
+startingPage &lt;- unlist(lapply(auxPages, &quot;[[&quot;, 1))
+endingPage &lt;- vector(mode=&quot;numeric&quot;, length = length(startingPage))
+  
+for( i in c(1:length(auxPages))){
+  if(length(auxPages[[i]])==2){ #more than 1 page issue
+    endingPage[i] &lt;- auxPages[[i]][2]
+  }else{ #only have one page
+    endingPage[i] &lt;- auxPages[[i]][1]
+  }
+}
+
+#numeric vector with starting Pages and ending pages
+startingPage &lt;- as.numeric(startingPage)
+endingPage &lt;- as.numeric(endingPage)
+
+# lengh of the articles
+paperLenght &lt;- endingPage - startingPage + 1
+
+#plot
+summary(paperLenght)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##     2.0    11.0    13.0    12.3    15.0    23.0       1</code></pre>
+<pre class="r"><code>boxplot(paperLenght)</code></pre>
+<p><img src="webScraping_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div id="going-further" class="section level4">
+<h4>Going further</h4>
+<p>Unfortunately, one can not give a an unique solution for doing web scraping. Web scraping is problem driven and many different aspects/problems may emerge on the way. Two possible problems or extensions one might want to consider for the Case study are exposed in the following.</p>
+<ol style="list-style-type: decimal">
+<li>We obtained the information of only one issue. This might lack on representativeness, in other words, what if did I take an special issue and my estimations are biased?</li>
+</ol>
+<p>To solve this weakness, one could run the code developed above recursively to look for different issues. To do that, lets first embed all the code into a function called ‘scrapThis’ that has as argument the url and returns the lenght of the articles.</p>
+<pre class="r"><code>scrapThis &lt;- function(targetWeb){
+
+#reading the html content
+JASAweb &lt;- read_html(targetWeb)
+
+#getting the relevant information
+pages_items &lt;- JASAweb %&gt;% 
+  html_node(&quot;body&quot;) %&gt;% xml_find_all(&quot;//div[contains(@class, &#39;tocPageRange maintextleft&#39;)]&quot;)
+
+#arranging the data
+auxPages &lt;- pages_items %&gt;% html_text() %&gt;% substring(8) %&gt;% strsplit(&quot;-&quot;)
+
+startingPage &lt;- unlist(lapply(auxPages, &quot;[[&quot;, 1))
+endingPage &lt;- vector(mode=&quot;numeric&quot;, length = length(startingPage))
+  
+for( i in c(1:length(auxPages))){
+  if(length(auxPages[[i]])==2){ #more than 1 page issue
+    endingPage[i] &lt;- auxPages[[i]][2]
+  }else{ #only have one page
+    endingPage[i] &lt;- auxPages[[i]][1]
+  }
+}
+
+#numeric vector with starting Pages and ending pages
+startingPage &lt;- as.numeric(startingPage)
+endingPage &lt;- as.numeric(endingPage)
+
+# lengh of the articles and remove NA given by the list of Collaboratos
+paperLenght &lt;- endingPage - startingPage + 1
+
+return(paperLenght)
+}</code></pre>
+<p>Then, we have to understand the url pattern that makes us to navigate from one issue to other. In this case, we have:</p>
+<div class="figure">
+<img src="webScraping/urlAnalysis.JPG" alt="Understanding the url" />
+<p class="caption">Understanding the url</p>
+</div>
+<p>As illustration, we will consider only the last 4 issues, belonging to the volume of the last year. One only needs to substitute in the url the number of the issue (528) by the previous one (527, 526, 525).</p>
+<pre class="r"><code>issuesToDownload &lt;- c(525:528)
+firsPartURL &lt;- &quot;https://amstat.tandfonline.com/toc/uasa20/114/&quot;
+lastPartURL &lt;- &quot;?nav=tocList&quot;
+lastVolumeURL &lt;- paste0(firsPartURL, paste0(issuesToDownload, lastPartURL))</code></pre>
+<p>The chunk of code that iteratively navigates and collect the lenght of the articles is the following:</p>
+<pre class="r"><code>paperLenghtAll &lt;- vector(mode = &quot;numeric&quot;, length = 0)
+for(i in lastVolumeURL){
+  paperLenghtAll &lt;- c(paperLenghtAll, scrapThis(i))
+}</code></pre>
+<p>We end up with the information of 172 articles from 2020’s Volume.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Prior to any analysis, inspect your data.</li>
+</ol>
+<pre class="r"><code>summary(paperLenghtAll)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##     1.0    10.0    12.0    11.3    14.0    23.0       1</code></pre>
+<pre class="r"><code>par(mfrow = c(1,2))
+boxplot(paperLenghtAll)
+hist(paperLenghtAll)</code></pre>
+<p><img src="webScraping_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>What is going on here? We have NA articles with 1 less than 5 pages, something a bit unusual. Just by exploring the Journal, one could notice that there are sometimes many issues with rejoinders or with an article with only a list of contributors. To solve this problem we can simply remove the outliers (trim the sample) with an objective rule such as the one given by the Boxplot (assuming that the distribution of the articles length is symmetric) or with an ad hoc rule given my experience reading articles from JASA (assuming that my experience is reasonable).</p>
+<pre class="r"><code>qnt &lt;- quantile(paperLenghtAll, probs=c(.25, .75), na.rm = T)
+w &lt;- 1.5 * IQR(paperLenghtAll, na.rm = T)
+
+trimmedSample &lt;- paperLenghtAll[! (paperLenghtAll &gt; qnt[2] + w | paperLenghtAll &lt; qnt[1] - w)]
+
+summary(trimmedSample)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+##     4.0    11.0    13.0    12.6    14.0    20.0       1</code></pre>
+<pre class="r"><code>par(mfrow = c(1,2))
+boxplot(trimmedSample)
+hist(trimmedSample)</code></pre>
+<p><img src="webScraping_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<blockquote>
+<p>I conclude that I should submit an article with around 12.58 pages =)</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Please, note the irony.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

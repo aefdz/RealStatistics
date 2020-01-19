@@ -1,0 +1,209 @@
+---
+title: "Web Scraping"
+output:
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+    css: mystyle.css
+---
+
+```{r setup, include=FALSE , message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#install.packages("selectr")
+#install.packages("xml2")
+#install.packages("rvest")
+#install.packages("stringr")
+#install.packages("jsonlite")
+
+library("xml2")
+library("rvest")
+```
+
+## Introduction
+
+This case study aims to show how to get the information from a website and exploit statistically its contents. 
+In general, we can think about this task, called web scraping, as a process involving the following three steps:
+
+1. Access to a web page.
+2. Download the source files that generate the web.
+3. Make the downloaded data understadable and proper to your goals.
+
+
+The steps above could be done in many different ways, from completely automated implementations to a completely manual work. This time, I will use R to save some time and develope a repreduible code to give an answer to the problem above. We will make use of the `rvest` and `xml2` packages.
+
+To see other problems and learn more above it, I recommend to have a look to the following links: 
+
+* [An introduction to web scraping using R (freeCodeCamp)](https://www.freecodecamp.org/news/an-introduction-to-web-scraping-using-r-40284110c848/)
+* [Tidy web scraping in R — Tutorial and resources (towards data science)](https://towardsdatascience.com/tidy-web-scraping-in-r-tutorial-and-resources-ac9f72b4fe47)
+
+## The problem 
+I am willing to publish some contents from my thesis in the [*Journal of the American Statistical Association*](https://amstat.tandfonline.com/loi/uasa20). 
+However, I am afraid of bothering the Editor and Referees with a very long article.
+
+One could simply ask to his/her experienced colleges or check the rules for submitting an article. Nevertheless, I prefer to empirical check the Journal's standards by scraping a resonable set of information from its website's ^[Please, note the irony.]. 
+
+## Web Scraping in R
+
+### 1. Accessing a page from R
+
+First, we need to specify the web address to R and made R read the source files of the web (in particular the HTML). Suppose we will start from the last published [issue](https://amstat.tandfonline.com/toc/uasa20/114/528?nav=tocList). 
+
+![Inspecting the target website](webScraping/jasa.jpg)
+
+```{r}
+#Specifying the url
+targetWeb <- "https://amstat.tandfonline.com/toc/uasa20/114/528?nav=tocList"
+
+#reading the html content
+JASAweb <- read_html(targetWeb)
+
+#see elements
+JASAweb %>% html_node("body") %>% html_children()
+```
+
+### 2. Teaching R how to find the information
+
+Next, we will make use of HTML tags for extracting data using Inspect Element. Go to the web site and see the HTML tags.
+
+![Recognizing the information of interest.](webScraping/pages.jpg)
+
+In order to find out the class of the HTML tag, use the following steps:
+
+Based on CSS selectors such as class and id, we will scrape the data from the HTML. To find the CSS class for the product title, we need to right-click on title and select “Inspect” or “Inspect Element”.
+
+![Finding out the tags.](webScraping/tags.JPG)
+
+
+```{r}
+pages_items <- JASAweb %>% 
+ html_node("body") %>% xml_find_all("//div[contains(@class, 'tocPageRange maintextleft')]")
+
+pages_items
+```
+
+### 3. Data arranging 
+
+Now we need to make the information understandable to R. The next chunk of code goes from a the HTML information to the numeric vector containning the length page of the last issue articles.
+
+```{r}
+#arrage the data. Take html text, get the page number as a character and split.
+auxPages <- pages_items %>% html_text() %>% substring(8) %>% strsplit("-")
+
+#numeric vector with starting Pages and ending pages
+startingPage <- unlist(lapply(auxPages, "[[", 1))
+endingPage <- vector(mode="numeric", length = length(startingPage))
+  
+for( i in c(1:length(auxPages))){
+  if(length(auxPages[[i]])==2){ #more than 1 page issue
+    endingPage[i] <- auxPages[[i]][2]
+  }else{ #only have one page
+    endingPage[i] <- auxPages[[i]][1]
+  }
+}
+
+#numeric vector with starting Pages and ending pages
+startingPage <- as.numeric(startingPage)
+endingPage <- as.numeric(endingPage)
+
+# lengh of the articles
+paperLenght <- endingPage - startingPage + 1
+
+#plot
+summary(paperLenght)
+boxplot(paperLenght)
+```
+
+#### Going further
+Unfortunately, one can not give a an unique solution for doing web scraping. Web scraping is problem driven and many different aspects/problems may emerge on the way.
+Two possible problems or extensions one might want to consider for the Case study are exposed in the following.
+
+1. We obtained the information of only one issue. This might lack on representativeness, in other words, what if did I take an special issue and my estimations are biased? 
+
+To solve this weakness, one could run the code developed above recursively to look for different issues. To do that, lets first embed all the code into a function called 'scrapThis' that has as argument the url and returns the lenght of the articles.
+
+```{r}
+scrapThis <- function(targetWeb){
+
+#reading the html content
+JASAweb <- read_html(targetWeb)
+
+#getting the relevant information
+pages_items <- JASAweb %>% 
+  html_node("body") %>% xml_find_all("//div[contains(@class, 'tocPageRange maintextleft')]")
+
+#arranging the data
+auxPages <- pages_items %>% html_text() %>% substring(8) %>% strsplit("-")
+
+startingPage <- unlist(lapply(auxPages, "[[", 1))
+endingPage <- vector(mode="numeric", length = length(startingPage))
+  
+for( i in c(1:length(auxPages))){
+  if(length(auxPages[[i]])==2){ #more than 1 page issue
+    endingPage[i] <- auxPages[[i]][2]
+  }else{ #only have one page
+    endingPage[i] <- auxPages[[i]][1]
+  }
+}
+
+#numeric vector with starting Pages and ending pages
+startingPage <- as.numeric(startingPage)
+endingPage <- as.numeric(endingPage)
+
+# lengh of the articles and remove NA given by the list of Collaboratos
+paperLenght <- endingPage - startingPage + 1
+
+return(paperLenght)
+}
+```
+
+Then, we have to understand the url pattern that makes us to navigate from one issue to other. In this case, we have:
+
+![Understanding the url](webScraping/urlAnalysis.JPG)
+
+As illustration, we will consider only the last 4 issues, belonging to the volume of the last year. One only needs to substitute in the url the number of the issue (528) by the previous one (527, 526, 525).
+
+```{r}
+issuesToDownload <- c(525:528)
+firsPartURL <- "https://amstat.tandfonline.com/toc/uasa20/114/"
+lastPartURL <- "?nav=tocList"
+lastVolumeURL <- paste0(firsPartURL, paste0(issuesToDownload, lastPartURL))
+```
+
+The chunk of code that iteratively navigates and collect the lenght of the articles is the following:
+
+```{r}
+paperLenghtAll <- vector(mode = "numeric", length = 0)
+for(i in lastVolumeURL){
+  paperLenghtAll <- c(paperLenghtAll, scrapThis(i))
+}
+```
+
+We end up with the information of `r length(paperLenghtAll)` articles from 2020's Volume.
+
+2. Prior to any analysis, inspect your data.
+
+```{r}
+summary(paperLenghtAll)
+par(mfrow = c(1,2))
+boxplot(paperLenghtAll)
+hist(paperLenghtAll)
+```
+
+What is going on here? We have `r sum(paperLenghtAll<5)` articles with 1 less than 5 pages, something a bit unusual. Just by exploring the Journal, one could notice that there are sometimes many issues with rejoinders or with an article with only a list of contributors. To solve this problem we can simply remove the outliers (trim the sample) with an objective rule such as the one given by the Boxplot (assuming that the distribution of the articles length is symmetric) or with an ad hoc rule given my experience reading articles from JASA (assuming that my experience is reasonable).
+
+```{r}
+
+qnt <- quantile(paperLenghtAll, probs=c(.25, .75), na.rm = T)
+w <- 1.5 * IQR(paperLenghtAll, na.rm = T)
+
+trimmedSample <- paperLenghtAll[! (paperLenghtAll > qnt[2] + w | paperLenghtAll < qnt[1] - w)]
+
+summary(trimmedSample)
+par(mfrow = c(1,2))
+boxplot(trimmedSample)
+hist(trimmedSample)
+```
+
+> I conclude that I should submit an article with around `r mean(trimmedSample, na.rm = TRUE)` pages =)

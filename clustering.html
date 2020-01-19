@@ -11,7 +11,7 @@
 
 
 
-<title>Teaching Innovation Project</title>
+<title>Clustering</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,7 +19,11 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -248,7 +252,73 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -258,6 +328,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -319,39 +399,30 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
-
-
-<h1 class="title toc-ignore">Teaching Innovation Project</h1>
-
-</div>
-
-
-<p>This website aims to show how theoretical concepts can be backbones to solve real and relevant problems.</p>
-<!--<img src="wordcloud.png" width="600" height="400" /> -->
-<p><img src="wordcloud.png" /></p>
-<div id="about-the-project" class="section level2">
-<h2>About the project</h2>
-<p>The main reasons to embark on this project are:</p>
-<ol style="list-style-type: decimal">
-<li>the wrong idea students have in relation to the subject of Statistics, as they frequently associate it to a set of theoretical results without real application;</li>
-<li>the necessity to implement educational cohesion measures between related subjects that would allow the student to follow the natural sequence of theoretical concepts and their application;</li>
-<li>to enhance students’ motivation through the resolution of actual problems by the application of theoretical concepts they already know;</li>
-<li>to acquaint the students with the eventual problems they may encounter in positions in companies or institutions in which a quantitative profile is required and, at the same time, to strengthen their CV for their future employability.</li>
-</ol>
-<p>Specifically, weekly sessions (voluntary and additional to the statutory lessons) will be scheduled in which the professor will introduce current problems of remarkable notoriety in the business or institutional sectors. These problems will be solved by the application of statistical concepts studied in related courses/subjects. For their resolution, the use of the most commonly used software will be necessary and, thus, an IT classroom is required.</p>
-<p>For the selection of the cases, a research process has been carried out based on current job offers (LinkedIn, Infojobs, etc.) where the employers’ requirements are related to the resolution of an explicit quantitative case. Among all offers, the most frequent will be chosen, as long as they can be adapted to the students’ knowledge. For their resolution, the software and procedures will be chosen accordingly, keeping the balance between what is required and the appropriateness of the software used in order to solve them.</p>
-<p>The sessions will be structured in four phases. Firstly, with the aim of giving the students the feeling that what they will be learning is real and of particular relevance, the problem will be exposed by showing them the job offers, videos, press notes, documents, etc., in which the interest of the problem is explained. Secondly, professor and students will think about the statistical concepts already learned that could be useful in the resolution of the problem. In this way, students will be part of a recreated business/institution environment and will therefore feel involved in the resolution of the problem. Thirdly, professor and students will work together in solving the problem making use of the adequate tools, thus exploring the link between theory and applicability. Finally, students will present their results, with the aim of recreating a situation as close to reality as possible. These results will be presented orally and as classic and dynamic (Shiny App) reports.</p>
-<p>The aim of this project is to show the students how useful the concepts they are learning actually are, and to develop the capability to use their critic judgment when thinking about the application of such concepts. Additionally, students will hopefully increase their motivation of acquiring a knowledge that will help them in their way into the labor market, both strengthening their quantitative profiles and by having a first glimpse of what they may encounter<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. Furthermore, these sessions will serve as a connecting link among similar subjects, so that students will be able to see the connection and coordination between them and thus find it easier to understand their relationships.</p>
-</div>
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>Big Data Specialists are one of the most demanded professions, according to the «XI Informe Los + Buscados en 2016» report, created by Adecco. «The appearing professions are related to data anlytics, statistics and mathematics. Experts in dealing with the amounts of information accumulated in the Big Data cloud are required. Almost all companies have large amounts of data about their clients and users. It is necessary to make use of this information in order to provide a better service » explains the director of Public Policies and Institutional Relationships in Google Spain and Portugal.<a href="#fnref1" class="footnote-back">↩</a></p></li>
-</ol>
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
 </div>
 
 
 
+<h1 class="title toc-ignore">Clustering</h1>
+
+</div>
+
+
+<div id="brief-explanation" class="section level2">
+<h2>Brief Explanation</h2>
+<p>One of the main goals referred to in the economic development literature is the need to fight and eradicate poverty. However, in order for economic policies to be efficient, it is highly important to properly understand and establish the target of such policies (the poorest). In this paper, we propose a new methodology based on a multivariate approach to determine the profile of the poorest in Tanzania. Through the application of Monge-Kantarovich’s depth measure and Voronoi’s iteration, we see that variables such as the quality of health or the access to supplies play crucial roles in the correct measurement of poverty in Tanzania.</p>
+</div>
+
+
+
+</div>
+</div>
 
 </div>
 
@@ -383,7 +454,38 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
