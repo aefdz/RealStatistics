@@ -3,7 +3,9 @@ title: "Teaching Innovation Project"
 css: mystyle.css
 ---
 
-This website aims to show how theoretical concepts can be backbones to solve real and relevant problems.
+This website shows how theoretical concepts can be backbones to solve real and relevant problems. The aim of the sessions is to apply flipped-classroom philosophy and trying to solve the proposed problems with the knowledge that the students got from the theoretical classes.
+
+
 
 <!--<img src="wordcloud.png" width="600" height="400" /> -->
 
